@@ -1,0 +1,511 @@
+<div class="notifications-page">
+
+  
+
+  <header class="page-header">
+
+    
+    <div class="header-wave header-wave-one"></div>
+    <div class="header-wave header-wave-two"></div>
+
+    <div class="header-content">
+
+      
+      <div class="breadcrumb">
+
+        <span>Notifications</span>
+
+      </div>
+
+
+      
+      <div class="page-title-row">
+
+        <div class="page-title-icon">
+
+          <mat-icon>
+            notifications_none
+          </mat-icon>
+
+        </div>
+
+        <div>
+
+          <h1>
+            Notifications
+          </h1>
+
+          <p>
+            Stay updated with invoice and workflow activity
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    
+
+    <div class="header-notification-summary">
+
+      <div class="summary-icon">
+
+        <mat-icon>
+          notifications
+        </mat-icon>
+
+      </div>
+
+      <div class="summary-content">
+
+        <strong>
+          {{ unreadCount }}
+        </strong>
+
+        <span>
+          Unread Notifications
+        </span>
+
+      </div>
+
+      <mat-icon class="summary-arrow">
+        chevron_right
+      </mat-icon>
+
+    </div>
+
+
+    
+
+    @if (unreadCount > 0) {
+
+    <button type="button" mat-flat-button class="mark-all-button" (click)="markAllAsRead()" [disabled]="processing">
+
+      <mat-icon>
+        done_all
+      </mat-icon>
+
+      <span>
+        {{ processing ? 'Updating...' : 'Mark All as Read' }}
+      </span>
+
+    </button>
+
+    }
+
+  </header>
+
+
+  
+
+  <section class="notification-toolbar">
+
+    
+
+    <div class="filter-tabs">
+
+      
+
+      <button type="button" class="filter-tab" [class.active]="selectedCategory === 'ALL'" (click)="setCategory('ALL')">
+
+        <span>
+          All
+        </span>
+
+        <span class="filter-count">
+          {{ getCategoryCount('ALL') }}
+        </span>
+
+      </button>
+
+
+      
+
+      <button type="button" class="filter-tab" [class.active]="selectedCategory === 'UNREAD'"
+        (click)="setCategory('UNREAD')">
+
+        <span>
+          Unread
+        </span>
+
+        <span class="filter-count">
+          {{ unreadCount }}
+        </span>
+
+      </button>
+
+
+      
+
+      <button type="button" class="filter-tab" [class.active]="selectedCategory === 'INVOICES'"
+        (click)="setCategory('INVOICES')">
+
+        <span>
+          Invoices
+        </span>
+
+        <span class="filter-count">
+          {{ getCategoryCount('INVOICES') }}
+        </span>
+
+      </button>
+
+
+      
+
+      <button type="button" class="filter-tab" [class.active]="selectedCategory === 'PURCHASE_ORDERS'"
+        (click)="setCategory('PURCHASE_ORDERS')">
+
+        <span>
+          Purchase Orders
+        </span>
+
+        <span class="filter-count">
+          {{ getCategoryCount('PURCHASE_ORDERS') }}
+        </span>
+
+      </button>
+
+
+      
+
+      <button type="button" class="filter-tab" [class.active]="selectedCategory === 'SYSTEM'"
+        (click)="setCategory('SYSTEM')">
+
+        <span>
+          System
+        </span>
+
+        <span class="filter-count">
+          {{ getCategoryCount('SYSTEM') }}
+        </span>
+
+      </button>
+
+    </div>
+
+
+    
+
+    <div class="toolbar-actions">
+
+      
+
+      <mat-form-field appearance="outline" class="notification-search" subscriptSizing="dynamic">
+
+        <mat-label>Search notifications...</mat-label>
+
+        <mat-icon matIconPrefix>search</mat-icon>
+
+        <input matInput type="text" [value]="searchTerm" (input)="onSearch($event)" />
+
+      </mat-form-field>
+
+
+      
+
+      <button type="button" class="toolbar-icon-button" mat-icon-button matTooltip="Refresh notifications"
+        (click)="loadNotifications()" [disabled]="loading">
+
+        <mat-icon [class.rotate-icon]="loading">
+          refresh
+        </mat-icon>
+
+      </button>
+
+    </div>
+
+  </section>
+
+
+  
+
+  @if (!loading && errorMessage) {
+
+  <section class="error-card">
+
+    <div class="error-icon">
+
+      <mat-icon>
+        error_outline
+      </mat-icon>
+
+    </div>
+
+
+    <div class="error-content">
+
+      <strong>
+        Unable to load notifications
+      </strong>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+    </div>
+
+
+    <button type="button" mat-stroked-button class="retry-button" (click)="loadNotifications()">
+
+      <mat-icon>
+        refresh
+      </mat-icon>
+
+      <span>
+        Retry
+      </span>
+
+    </button>
+
+  </section>
+
+  }
+
+
+  
+
+  @if (loading) {
+
+  <section class="loading-card">
+
+    <div class="loading-spinner">
+
+      <mat-spinner diameter="42"></mat-spinner>
+
+    </div>
+
+    <strong>
+      Loading notifications
+    </strong>
+
+    <span>
+      Please wait while we fetch the latest updates...
+    </span>
+
+  </section>
+
+  }
+
+
+  
+
+  @if (
+  !loading &&
+  !errorMessage &&
+  filteredNotifications.length > 0
+  ) {
+
+  <section class="notification-list">
+
+    @for (
+    notification of filteredNotifications;
+    track trackNotification($index, notification)
+    ) {
+
+    <article class="notification-card" [class.unread]="!notification.isRead" (click)="openNotification(notification)">
+
+      
+
+      <div class="notification-icon" [class]="getIconClass(notification)">
+
+        <mat-icon>
+          {{ getIcon(notification) }}
+        </mat-icon>
+
+      </div>
+
+
+      
+
+      <div class="notification-content">
+
+        <div class="notification-top">
+
+          <h2>
+            {{ notification.title }}
+          </h2>
+
+
+          @if (!notification.isRead) {
+
+          <span class="new-badge">
+            NEW
+          </span>
+
+          }
+
+        </div>
+
+
+        <p class="notification-message">
+          {{ notification.message }}
+        </p>
+
+
+        <div class="notification-meta">
+
+          <span>
+
+            <mat-icon>
+              schedule
+            </mat-icon>
+
+            {{
+            notification.createdAt
+            | date:'dd MMM yyyy, hh:mm a'
+            }}
+
+          </span>
+
+
+          @if (
+          notification.relatedEntity?.type
+          ) {
+
+          <span>
+
+            <mat-icon>
+              link
+            </mat-icon>
+
+            Related Invoice
+
+          </span>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      
+
+      <div class="notification-arrow">
+
+        <mat-icon>
+          chevron_right
+        </mat-icon>
+
+      </div>
+
+    </article>
+
+    }
+
+  </section>
+
+  }
+
+
+  
+
+  @if (
+  !loading &&
+  !errorMessage &&
+  filteredNotifications.length === 0
+  ) {
+
+  <section class="empty-card">
+
+    
+
+    <div class="empty-wave empty-wave-left"></div>
+
+    <div class="empty-wave empty-wave-right"></div>
+
+
+    
+
+    <div class="empty-orbit">
+
+      <div class="orbit-dot orbit-dot-one"></div>
+      <div class="orbit-dot orbit-dot-two"></div>
+      <div class="orbit-dot orbit-dot-three"></div>
+
+
+      
+
+      <div class="orbit-icon orbit-document">
+
+        <mat-icon>
+          description
+        </mat-icon>
+
+      </div>
+
+
+      
+
+      <div class="orbit-icon orbit-settings">
+
+        <mat-icon>
+          settings
+        </mat-icon>
+
+      </div>
+
+
+      
+
+      <div class="orbit-icon orbit-list">
+
+        <mat-icon>
+          format_list_bulleted
+        </mat-icon>
+
+      </div>
+
+
+      
+
+      <div class="main-bell">
+
+        <div class="bell-glow"></div>
+
+        <mat-icon>
+          notifications
+        </mat-icon>
+
+      </div>
+
+    </div>
+
+
+    
+
+    <div class="empty-content">
+
+      <strong>
+        No Notifications Yet
+      </strong>
+
+      <span>
+        You're all caught up! We'll notify you about invoice and workflow
+        updates here.
+      </span>
+
+
+      <button type="button" mat-stroked-button class="refresh-empty-button" (click)="loadNotifications()"
+        [disabled]="loading">
+
+        <mat-icon>
+          refresh
+        </mat-icon>
+
+        <span>
+          Refresh
+        </span>
+
+      </button>
+
+    </div>
+
+  </section>
+
+  }
+
+</div>

@@ -1,0 +1,14 @@
+import request from 'supertest';
+import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+import connectDatabase from './src/config/database.js';
+process.env.NODE_ENV='test';
+process.env.JWT_ACCESS_SECRET='test-access-secret-change-me';
+process.env.MONGO_URI='mongodb://127.0.0.1:27017/iris_invoices';
+const { default: app } = await import('./src/app.js');
+await connectDatabase();
+const token = jwt.sign({ sub: new mongoose.Types.ObjectId().toString(), employeeId: 'USER001', role: 'USER' }, process.env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
+const payload = { vendor: { vendorCode: 'TEST_VENDOR', name: 'Test Vendor' }, invoiceDate: '2026-09-15', dueDate: '2026-09-30', items: [{ description: 'Test Item', quantity: 1, unitPrice: 1000, taxRate: 18 }] };
+const res = await request(app).post('/api/v1/invoices').set('Authorization', 'Bearer ' + token).send(payload);
+console.log('status=', res.statusCode);
+console.log(JSON.stringify(res.body, null, 2));

@@ -1,0 +1,651 @@
+<section class="user-list-page">
+
+  
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        Administration
+        <span>/</span>
+        Users
+      </div>
+
+      <h1>
+        User Management
+      </h1>
+
+      <p>
+        Manage IRIS system users and access.
+      </p>
+
+    </div>
+
+
+    <button
+      *ngIf="isAdmin"
+      mat-flat-button
+      class="create-button"
+      (click)="createUser()">
+
+      <mat-icon>
+        person_add
+      </mat-icon>
+
+      Create User
+
+    </button>
+
+  </div>
+
+
+  
+  <div
+    *ngIf="successMessage"
+    class="message-card success-message">
+
+    <mat-icon>
+      check_circle
+    </mat-icon>
+
+    <span>
+      {{ successMessage }}
+    </span>
+
+    <button
+      mat-icon-button
+      type="button"
+      (click)="successMessage = ''">
+
+      <mat-icon>
+        close
+      </mat-icon>
+
+    </button>
+
+  </div>
+
+
+  
+  <div
+    *ngIf="errorMessage"
+    class="message-card error-message">
+
+    <mat-icon>
+      error_outline
+    </mat-icon>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+    <button
+      mat-icon-button
+      type="button"
+      (click)="errorMessage = ''">
+
+      <mat-icon>
+        close
+      </mat-icon>
+
+    </button>
+
+  </div>
+
+
+  
+  <div class="filter-card">
+
+    <div class="filter-header">
+
+      <div class="filter-title">
+
+        <div class="filter-icon">
+          <mat-icon>
+            filter_alt
+          </mat-icon>
+        </div>
+
+        <div>
+
+          <h3>
+            Search & Filter
+          </h3>
+
+          <p>
+            Find users by employee, role or status.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="filter-body">
+
+      
+      <mat-form-field
+        appearance="outline"
+        class="search-field">
+
+        <mat-label>
+          Search users
+        </mat-label>
+
+        <mat-icon matPrefix>
+          search
+        </mat-icon>
+
+        <input
+          matInput
+          type="text"
+          placeholder="Employee ID, name or email"
+          [(ngModel)]="search"
+          (keyup.enter)="searchUsers()">
+
+        <button
+          *ngIf="search"
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="search = ''; searchUsers()">
+
+          <mat-icon>
+            close
+          </mat-icon>
+
+        </button>
+
+      </mat-form-field>
+
+
+      
+      <mat-form-field
+        appearance="outline">
+
+        <mat-label>
+          Role
+        </mat-label>
+
+        <mat-icon matPrefix>
+          admin_panel_settings
+        </mat-icon>
+
+        <mat-select [(ngModel)]="selectedRole">
+
+          <mat-option value="">
+            All Roles
+          </mat-option>
+
+          <mat-option value="ADMIN">
+            Admin
+          </mat-option>
+
+          <mat-option value="FINANCE">
+            Finance
+          </mat-option>
+
+          <mat-option value="APPROVER">
+            Approver
+          </mat-option>
+
+          <mat-option value="USER">
+            User
+          </mat-option>
+
+        </mat-select>
+
+      </mat-form-field>
+
+
+      
+      <mat-form-field
+        appearance="outline">
+
+        <mat-label>
+          Department
+        </mat-label>
+
+        <mat-icon matPrefix>
+          business
+        </mat-icon>
+
+        <input
+          matInput
+          type="text"
+          placeholder="Department"
+          [(ngModel)]="department"
+          (keyup.enter)="searchUsers()">
+
+      </mat-form-field>
+
+
+      
+      <mat-form-field
+        appearance="outline">
+
+        <mat-label>
+          Status
+        </mat-label>
+
+        <mat-icon matPrefix>
+          toggle_on
+        </mat-icon>
+
+        <mat-select [(ngModel)]="selectedStatus">
+
+          <mat-option value="">
+            All Status
+          </mat-option>
+
+          <mat-option value="active">
+            Active
+          </mat-option>
+
+          <mat-option value="inactive">
+            Inactive
+          </mat-option>
+
+        </mat-select>
+
+      </mat-form-field>
+
+
+      
+      <div class="filter-actions">
+
+        <button
+          mat-flat-button
+          class="search-button"
+          type="button"
+          (click)="searchUsers()">
+
+          <mat-icon>
+            search
+          </mat-icon>
+
+          Search
+
+        </button>
+
+
+        <button
+          mat-stroked-button
+          type="button"
+          class="reset-button"
+          (click)="resetFilters()">
+
+          <mat-icon>
+            restart_alt
+          </mat-icon>
+
+          Reset
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  
+  <div
+    *ngIf="loading"
+    class="loading-card">
+
+    <mat-spinner diameter="42"></mat-spinner>
+
+    <div>
+
+      <h3>
+        Loading users...
+      </h3>
+
+      <p>
+        Please wait.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  
+  <div
+    *ngIf="!loading"
+    class="table-card">
+
+
+    
+    <div class="table-card-header">
+
+      <div>
+
+        <h3>
+          Users
+        </h3>
+
+        <p>
+          Showing
+          <strong>{{ getStartRecord() }}</strong>
+          –
+          <strong>{{ getEndRecord() }}</strong>
+          of
+          <strong>{{ total }}</strong>
+          users
+        </p>
+
+      </div>
+
+      <div class="total-badge">
+
+        <mat-icon>
+          people
+        </mat-icon>
+
+        {{ total }}
+
+      </div>
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+      <table class="user-table">
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Employee
+            </th>
+
+            <th>
+              Name
+            </th>
+
+            <th>
+              Email
+            </th>
+
+            <th>
+              Department
+            </th>
+
+            <th>
+              Role
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            <th
+              *ngIf="isAdmin"
+              class="actions-column">
+
+              Actions
+
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          <tr
+            *ngFor="let user of users">
+
+            <td>
+
+              <div class="employee-cell">
+
+                <div class="employee-avatar">
+                  {{ user.name?.charAt(0)?.toUpperCase() || '?' }}
+                </div>
+
+                <strong>
+                  {{ user.employeeId }}
+                </strong>
+
+              </div>
+
+            </td>
+
+
+            <td>
+
+              <strong class="user-name">
+                {{ user.name }}
+              </strong>
+
+            </td>
+
+
+            <td>
+
+              <span class="email-text">
+                {{ user.email }}
+              </span>
+
+            </td>
+
+
+            <td>
+
+              <span class="department-text">
+                {{ user.department || '-' }}
+              </span>
+
+            </td>
+
+
+            <td>
+
+              <span
+                class="role-badge"
+                [ngClass]="getRoleClass(user.role)">
+
+                {{ user.role }}
+
+              </span>
+
+            </td>
+
+
+            <td>
+
+              <span
+                class="status-badge"
+                [class.active]="user.isActive"
+                [class.inactive]="!user.isActive">
+
+                <span class="status-dot"></span>
+
+                {{ user.isActive ? 'Active' : 'Inactive' }}
+
+              </span>
+
+            </td>
+
+
+            <td
+              *ngIf="isAdmin"
+              class="actions-column">
+
+              <div class="action-buttons">
+
+
+                
+                <button
+                  mat-icon-button
+                  type="button"
+                  matTooltip="Edit user"
+                  class="edit-action"
+                  (click)="editUser(user.id)">
+
+                  <mat-icon>
+                    edit
+                  </mat-icon>
+
+                </button>
+
+
+                
+                <button
+                  *ngIf="user.isActive"
+                  mat-icon-button
+                  type="button"
+                  matTooltip="Deactivate user"
+                  class="warning-action"
+                  (click)="deactivateUser(user)">
+
+                  <mat-icon>
+                    person_remove
+                  </mat-icon>
+
+                </button>
+
+
+                
+                <button
+                  *ngIf="!user.isActive"
+                  mat-icon-button
+                  type="button"
+                  matTooltip="Activate user"
+                  class="success-action"
+                  (click)="activateUser(user)">
+
+                  <mat-icon>
+                    person_add
+                  </mat-icon>
+
+                </button>
+
+
+                
+                <button
+                  mat-icon-button
+                  type="button"
+                  matTooltip="Delete user"
+                  class="delete-action"
+                  (click)="deleteUser(user)">
+
+                  <mat-icon>
+                    delete
+                  </mat-icon>
+
+                </button>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+
+          
+          <tr *ngIf="users.length === 0">
+
+            <td
+              [attr.colspan]="isAdmin ? 7 : 6"
+              class="empty-cell">
+
+              <div class="empty-state">
+
+                <div class="empty-icon">
+
+                  <mat-icon>
+                    people_outline
+                  </mat-icon>
+
+                </div>
+
+                <h3>
+                  No users found
+                </h3>
+
+                <p>
+                  Try changing your search or filter criteria.
+                </p>
+
+              </div>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+    
+    <div class="pagination-bar">
+
+      <div class="pagination-info">
+
+        Total users:
+        <strong>
+          {{ total }}
+        </strong>
+
+      </div>
+
+
+      <div class="pagination-controls">
+
+        <button
+          mat-icon-button
+          type="button"
+          matTooltip="Previous page"
+          [disabled]="page <= 1"
+          (click)="previousPage()">
+
+          <mat-icon>
+            chevron_left
+          </mat-icon>
+
+        </button>
+
+
+        <span class="page-number">
+
+          Page
+          <strong>{{ page }}</strong>
+          of
+          <strong>{{ totalPages || 1 }}</strong>
+
+        </span>
+
+
+        <button
+          mat-icon-button
+          type="button"
+          matTooltip="Next page"
+          [disabled]="page >= totalPages"
+          (click)="nextPage()">
+
+          <mat-icon>
+            chevron_right
+          </mat-icon>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

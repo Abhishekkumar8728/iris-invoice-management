@@ -1,0 +1,16 @@
+{
+  "name": "iris-invoice-backend",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.6.0"
+  },
+  "scripts": {
+    "start:user-service": "node --env-file=.env scripts/start-service.js user-service",
+    "start:notification-service": "node --env-file=.env scripts/start-service.js notification-service",
+    "start:auth-service": "node --env-file=.env scripts/start-service.js auth-service",
+    "start:invoice-service": "node --env-file=.env scripts/start-service.js invoice-service",
+    "start:api-gateway": "node --env-file=.env scripts/start-service.js api-gateway",
+    "start:all": "node --env-file=.env scripts/start-all.js"
+  }
+}

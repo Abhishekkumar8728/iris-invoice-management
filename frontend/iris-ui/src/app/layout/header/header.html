@@ -1,0 +1,220 @@
+
+<header class="app-header">
+
+  
+  <div class="header-left">
+    @if (!sidebarOpen) {
+      <button
+        type="button"
+        class="menu-button"
+        (click)="toggleMenu()"
+        aria-label="Open navigation"
+        title="Open navigation"
+      >
+        <i class="bi bi-list"></i>
+      </button>
+    }
+
+    <div class="header-brand">
+      <div class="vw-logo">
+        <img
+          src="/assets/images/companylogo.png"
+          alt="Volkswagen company logo"
+          class="company-logo"
+        />
+      </div>
+
+      <span class="brand-volkswagen">Volkswagen</span>
+      <span class="brand-divider"></span>
+      <span class="brand-skoda">Škoda</span>
+    </div>
+  </div>
+
+  
+  <div class="header-center">
+    <div class="header-search-wrapper">
+      <mat-form-field
+        appearance="outline"
+        class="header-search-field"
+        subscriptSizing="dynamic"
+      >
+        <mat-icon matIconPrefix class="search-prefix-icon">
+          search
+        </mat-icon>
+
+        <input
+          #searchInput
+          matInput
+          type="text"
+          [(ngModel)]="searchText"
+          (keydown)="onSearchKeydown($event)"
+          placeholder="Search invoices, PO, vendor, or reference number..."
+          aria-label="Search invoices, purchase orders, vendors, or reference numbers"
+        />
+
+        <span matSuffix class="search-shortcut">Ctrl + K</span>
+      </mat-form-field>
+    </div>
+
+    <div class="header-car-bg" aria-hidden="true"></div>
+  </div>
+
+  
+  <div class="header-right">
+
+    
+    <button
+      type="button"
+      class="header-icon-button notification-button"
+      title="Notifications"
+      aria-label="Notifications"
+      (click)="openNotifications()"
+    >
+      <i class="bi bi-bell"></i>
+
+      @if (unreadNotifications > 0) {
+        <span class="notification-badge">
+          {{ unreadNotifications > 99 ? '99+' : unreadNotifications }}
+        </span>
+      }
+    </button>
+
+    
+    <div
+      class="profile-container"
+      (click)="toggleProfile($event)"
+    >
+
+      
+      <button
+        type="button"
+        class="user-info"
+        [attr.aria-expanded]="profileOpen"
+        aria-label="Open user profile"
+        title="User profile"
+      >
+        <div class="user-avatar">
+          {{ userInitials }}
+        </div>
+
+        <div class="user-details">
+          <span class="user-name">
+            {{ user?.name?.trim() || '' }}
+          </span>
+
+          <span class="user-role">
+            {{ user?.role || '' }}
+          </span>
+        </div>
+
+        <i
+          class="bi bi-chevron-down user-arrow"
+          [class.arrow-open]="profileOpen"
+        ></i>
+      </button>
+
+      
+      @if (profileOpen) {
+        <section
+          class="profile-popup"
+          aria-label="User profile details"
+          (click)="$event.stopPropagation()"
+        >
+
+          
+          <div class="profile-popup-header">
+            <div class="profile-avatar-wrapper">
+              <div class="profile-avatar">
+                {{ userInitials }}
+              </div>
+
+              
+              <button
+                type="button"
+                class="profile-edit-button"
+                title="Edit profile"
+                aria-label="Edit profile"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
+            </div>
+
+            <div class="profile-identity">
+              <h3>{{ user?.name?.trim() || 'User' }}</h3>
+              <span class="profile-role">
+                {{ user?.role || 'USER' }}
+              </span>
+
+              <div class="profile-status">
+                <span class="status-dot"></span>
+                <span>Active</span>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="profile-details-list">
+
+            <div class="profile-detail-row">
+              <i class="bi bi-person"></i>
+              <span class="profile-detail-label">Full Name</span>
+              <span class="profile-detail-value">
+                {{ user?.name?.trim() || '—' }}
+              </span>
+            </div>
+
+            <div class="profile-detail-row">
+              <i class="bi bi-envelope"></i>
+              <span class="profile-detail-label">Email Address</span>
+              <span class="profile-detail-value">
+                {{ profileEmail }}
+              </span>
+            </div>
+
+            <div class="profile-detail-row">
+              <i class="bi bi-shield"></i>
+              <span class="profile-detail-label">Role</span>
+              <span class="profile-detail-value">
+                {{ user?.role || '—' }}
+              </span>
+            </div>
+
+            <div class="profile-detail-row">
+              <i class="bi bi-people"></i>
+              <span class="profile-detail-label">Department</span>
+              <span class="profile-detail-value">
+                {{ profileDepartment }}
+              </span>
+            </div>
+
+            <div class="profile-detail-row">
+              <i class="bi bi-building"></i>
+              <span class="profile-detail-label">Company</span>
+              <span class="profile-detail-value">
+                {{ profileCompany }}
+              </span>
+            </div>
+
+          </div>
+
+          
+          <div class="profile-popup-footer">
+            <button
+              type="button"
+              class="profile-logout-button"
+              [disabled]="loggingOut"
+              [attr.aria-busy]="loggingOut"
+              (click)="logout(); $event.stopPropagation()"
+            >
+              <i class="bi bi-box-arrow-right"></i>
+              <span>{{ loggingOut ? 'Logging out...' : 'Logout' }}</span>
+              <i class="bi bi-chevron-right logout-arrow"></i>
+            </button>
+          </div>
+
+        </section>
+      }
+    </div>
+
+  </div>
+</header>

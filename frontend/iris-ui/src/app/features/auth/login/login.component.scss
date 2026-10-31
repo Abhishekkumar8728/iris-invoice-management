@@ -1,0 +1,598 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.vw-login-page {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+  color: #e6eeee;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background:
+    radial-gradient(ellipse at 27% 44%, rgba(0, 105, 96, 0.19), transparent 44%),
+    radial-gradient(ellipse at 72% 42%, rgba(0, 72, 68, 0.15), transparent 42%),
+    linear-gradient(115deg, #020706 0%, #071513 48%, #020807 100%);
+}
+
+.vw-login-page::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 35% 58%,
+    rgba(0, 135, 119, 0.08),
+    transparent 52%
+  );
+}
+
+.vw-brand {
+  position: absolute;
+  z-index: 5;
+  top: 36px;
+  left: 5.5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.vw-logo {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border: 3px solid #aeb8b8;
+  border-radius: 50%;
+  color: #d7dfdf;
+  background: linear-gradient(145deg, #536061, #090d0e 60%, #6d7778);
+  box-shadow: 0 0 15px rgba(173, 218, 213, 0.14);
+}
+
+.vw-logo span {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border: 2px solid #cbd4d4;
+  border-radius: 50%;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -2px;
+}
+
+.vw-brand-name {
+  color: #b8c0c0;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.login-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 70px);
+  flex: 1;
+  min-height: 100vh;
+  padding: 105px 7% 55px;
+}
+
+.vehicle-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
+}
+
+.vehicle-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 750px;
+  margin: 0 auto;
+  padding-top: 85px;
+}
+
+.vehicle-content::before {
+  position: absolute;
+  z-index: -1;
+  top: 20%;
+  right: 8%;
+  bottom: 24%;
+  left: 8%;
+  content: "";
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse,
+    rgba(58, 111, 149, 0.42) 0%,
+    rgba(39, 78, 111, 0.28) 55%,
+    rgba(31, 56, 82, 0.08) 78%,
+    transparent 100%
+  );
+  filter: blur(55px);
+  pointer-events: none;
+}
+
+.vehicle-image {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  max-height: 430px;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  object-position: center;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  mix-blend-mode: screen;
+  filter:
+    brightness(0.94)
+    contrast(1.08)
+    drop-shadow(0 0 22px rgba(24, 194, 173, 0.13));
+  -webkit-mask-image: radial-gradient(
+    ellipse 72% 72% at 50% 48%,
+    #000 48%,
+    rgba(0, 0, 0, 0.96) 65%,
+    rgba(0, 0, 0, 0.58) 82%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 72% 72% at 50% 48%,
+    #000 48%,
+    rgba(0, 0, 0, 0.96) 65%,
+    rgba(0, 0, 0, 0.58) 82%,
+    transparent 100%
+  );
+  animation: vehicle-appear 0.9s ease-out both;
+}
+
+.vehicle-image-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 650px;
+  min-height: 250px;
+  margin: 0 auto;
+  border: 1px solid rgba(130, 199, 189, 0.3);
+  border-radius: 18px;
+  color: #edf1ec;
+  background: rgba(11, 31, 30, 0.75);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 700;
+  text-align: center;
+}
+
+.vehicle-caption {
+  position: relative;
+  z-index: 2;
+  margin-top: 8px;
+  padding-left: 4px;
+}
+
+.vehicle-caption h1 {
+  margin: 0 0 8px;
+  color: #edf7f3;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(24px, 2.4vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.35);
+}
+
+.vehicle-caption p {
+  margin: 0;
+  color: #b9cbc6;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.login-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 0;
+}
+
+.login-glass-panel {
+  position: relative;
+  width: 100%;
+  max-width: 450px;
+  padding: 42px 34px 35px;
+  border: 1px solid rgba(113, 193, 177, 0.3);
+  border-radius: 12px;
+  background: linear-gradient(
+    145deg,
+    rgba(12, 35, 31, 0.88),
+    rgba(3, 15, 13, 0.94)
+  );
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.3),
+    0 0 35px rgba(0, 133, 116, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(18px);
+}
+
+.login-glass-panel::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 1px;
+  content: "";
+  background: linear-gradient(90deg, #79d4c5, transparent);
+}
+
+.login-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 19px;
+  margin-bottom: 40px;
+  white-space: nowrap;
+}
+
+.login-tabs span,
+.login-tabs a {
+  position: relative;
+  padding-bottom: 10px;
+  color: #c6cecc;
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.login-tabs .tab-active {
+  color: #e1e9e7;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.login-tabs .tab-divider {
+  flex: 0 0 1px;
+  width: 1px;
+  height: 22px;
+  padding: 0;
+  background: rgba(221, 232, 228, 0.65);
+}
+
+.login-tabs .tab-active::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  content: "";
+  background: #72d2c4;
+  box-shadow: 0 0 12px rgba(91, 226, 207, 0.28);
+}
+
+.login-field {
+  position: relative;
+  margin-bottom: 22px;
+  border-bottom: 1px solid rgba(174, 204, 194, 0.72);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-field:focus-within {
+  border-bottom-color: #6ee1cb;
+  box-shadow: 0 2px 0 rgba(91, 221, 203, 0.18);
+}
+
+.login-field input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 12px 0 10px;
+  border: 0;
+  outline: none;
+  color: #edf4f1;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+}
+
+.login-field input::placeholder {
+  color: #c2ceca;
+  opacity: 1;
+}
+
+.password-field {
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  flex: 1;
+}
+
+.password-toggle {
+  flex: 0 0 auto;
+  padding: 6px;
+  border: 0;
+  color: #b6d5ce;
+  background: transparent;
+  cursor: pointer;
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid #72d2c4;
+  outline-offset: 2px;
+}
+
+.terms-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin: 24px 0 36px;
+  color: #c8d1ce;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.terms-row input {
+  flex: 0 0 auto;
+  width: 13px;
+  height: 13px;
+  margin-top: 4px;
+  accent-color: #67cdbd;
+}
+
+.terms-row a {
+  color: #d0d9d6;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.terms-row a:hover {
+  color: #7ee4d3;
+}
+
+.login-submit {
+  display: block;
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #72cfc0;
+  border-radius: 4px;
+  color: #e9f8f3;
+  background: linear-gradient(
+    110deg,
+    rgba(17, 91, 78, 0.45),
+    rgba(9, 52, 47, 0.4)
+  );
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-submit:hover:not(:disabled) {
+  background: linear-gradient(
+    110deg,
+    rgba(19, 126, 106, 0.7),
+    rgba(8, 77, 67, 0.7)
+  );
+  box-shadow: 0 0 22px rgba(65, 220, 190, 0.12);
+}
+
+.login-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.login-bottom-links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.login-bottom-links a {
+  display: inline-block;
+  color: #c6cecc;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.login-bottom-links a:hover {
+  color: #72d2c4;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.social-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 35px;
+  margin-top: 25px;
+}
+
+.social-login a {
+  color: #d4ddda;
+  font-size: 23px;
+  font-weight: 750;
+  text-decoration: none;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.social-login a:hover {
+  transform: translateY(-2px);
+  color: #72d8c9;
+}
+
+.login-error {
+  margin: -20px 0 20px;
+  color: #ffaaa5;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.decorative-star {
+  display: none !important;
+}
+
+@keyframes vehicle-appear {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .login-layout {
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+    gap: 24px;
+    padding-right: 4%;
+    padding-left: 4%;
+  }
+
+  .vehicle-image {
+    max-height: 340px;
+  }
+
+  .login-glass-panel {
+    padding: 34px 24px;
+  }
+
+  .login-tabs {
+    gap: 12px;
+  }
+
+  .login-tabs .tab-active {
+    font-size: 23px;
+  }
+}
+
+@media (max-width: 680px) {
+  .login-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    min-height: 100vh;
+    padding: 100px 20px 40px;
+  }
+
+  .vw-brand {
+    top: 18px;
+    left: 20px;
+    flex-direction: row;
+  }
+
+  .vw-logo {
+    width: 43px;
+    height: 43px;
+  }
+
+  .vw-logo span {
+    width: 32px;
+    height: 32px;
+    font-size: 15px;
+  }
+
+  .vw-brand-name {
+    font-size: 13px;
+  }
+
+  .vehicle-section {
+    min-height: auto;
+    padding: 0;
+  }
+
+  .vehicle-content {
+    padding-top: 0;
+  }
+
+  .vehicle-image {
+    max-height: 260px;
+  }
+
+  .vehicle-caption {
+    margin-top: 0;
+    text-align: center;
+  }
+
+  .vehicle-caption h1 {
+    font-size: 23px;
+  }
+
+  .vehicle-caption p {
+    font-size: 12px;
+  }
+
+  .login-section {
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  .login-glass-panel {
+    max-width: 460px;
+    margin: 0 auto;
+    padding: 32px 25px;
+  }
+
+  .login-tabs {
+    margin-bottom: 30px;
+  }
+
+  .login-tabs .tab-active {
+    font-size: 23px;
+  }
+
+  .login-bottom-links {
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .login-bottom-links a {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .login-glass-panel {
+    padding: 28px 18px;
+  }
+
+  .login-bottom-links {
+    gap: 12px;
+  }
+
+  .login-bottom-links a {
+    font-size: 11px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

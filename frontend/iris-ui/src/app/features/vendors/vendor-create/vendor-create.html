@@ -1,0 +1,1013 @@
+<div class="vendor-create-page">
+
+  
+
+  <div class="page-breadcrumb">
+
+    <span class="breadcrumb-home">
+      <mat-icon>home</mat-icon>
+    </span>
+
+    <span>
+      Workspace
+    </span>
+
+    <mat-icon>
+      chevron_right
+    </mat-icon>
+
+    <span>
+      Vendors
+    </span>
+
+    <mat-icon>
+      chevron_right
+    </mat-icon>
+
+    <span class="active">
+      Add Vendor
+    </span>
+
+  </div>
+
+
+  
+
+  <div class="page-header">
+
+    <div class="page-title-section">
+
+      <h1>
+        Add Vendor
+      </h1>
+
+      <p>
+        Create a new vendor to manage their invoices, purchase orders and payments.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      mat-stroked-button
+      class="back-button"
+      (click)="backToVendors()"
+    >
+
+      <mat-icon>
+        arrow_back
+      </mat-icon>
+
+      <span>
+        Back to Vendors
+      </span>
+
+    </button>
+
+  </div>
+
+
+  
+
+  @if (errorMessage) {
+
+    <div class="message error-message">
+
+      <mat-icon>
+        error_outline
+      </mat-icon>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+    </div>
+
+  }
+
+
+  
+
+  @if (successMessage) {
+
+    <div class="message success-message">
+
+      <mat-icon>
+        check_circle
+      </mat-icon>
+
+      <span>
+        {{ successMessage }}
+      </span>
+
+    </div>
+
+  }
+
+
+  
+
+  <form
+    [formGroup]="vendorForm"
+    (ngSubmit)="saveVendor()"
+    novalidate
+  >
+
+
+    
+
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+
+          <mat-icon>
+            description
+          </mat-icon>
+
+        </div>
+
+
+        <div class="section-heading">
+
+          <h2>
+            Basic Information
+          </h2>
+
+          <p>
+            Enter the basic details of the vendor.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="section-body">
+
+
+        
+
+        <div class="form-grid three-columns">
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Vendor Code
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              badge
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              formControlName="vendorCode"
+            />
+
+            @if (form.vendorCode.hasError('required')) {
+
+              <mat-error>
+                Vendor code is required
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Vendor Name
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              business
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              formControlName="vendorName"
+            />
+
+            @if (form.vendorName.hasError('required')) {
+
+              <mat-error>
+                Vendor name is required
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              GST Number
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              verified
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              formControlName="gstNumber"
+            />
+
+            @if (form.gstNumber.hasError('required')) {
+
+              <mat-error>
+                GST number is required
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+        </div>
+
+
+        
+
+        <div class="form-grid three-columns">
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              PAN Number
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              credit_card
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              formControlName="panNumber"
+            />
+
+            @if (form.panNumber.hasError('required')) {
+
+              <mat-error>
+                PAN number is required
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Vendor Type
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              category
+            </mat-icon>
+
+            <mat-select
+              formControlName="vendorType"
+            >
+
+              @for (
+                type of vendorTypes;
+                track type
+              ) {
+
+                <mat-option [value]="type">
+                  {{ type }}
+                </mat-option>
+
+              }
+
+            </mat-select>
+
+            @if (form.vendorType.hasError('required')) {
+
+              <mat-error>
+                Vendor type is required
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Country
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              public
+            </mat-icon>
+
+            <mat-select
+              formControlName="country"
+            >
+
+              @for (
+                country of countries;
+                track country
+              ) {
+
+                <mat-option [value]="country">
+                  {{ country }}
+                </mat-option>
+
+              }
+
+            </mat-select>
+
+            @if (form.country.hasError('required')) {
+
+              <mat-error>
+                Country is required
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+        </div>
+
+
+        
+
+        <div class="form-grid three-columns status-row">
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Status
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              toggle_on
+            </mat-icon>
+
+            <mat-select
+              formControlName="status"
+            >
+
+              <mat-option value="ACTIVE">
+                Active
+              </mat-option>
+
+              <mat-option value="INACTIVE">
+                Inactive
+              </mat-option>
+
+            </mat-select>
+
+          </mat-form-field>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    
+
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+
+          <mat-icon>
+            location_on
+          </mat-icon>
+
+        </div>
+
+
+        <div class="section-heading">
+
+          <h2>
+            Address Information
+          </h2>
+
+          <p>
+            Enter the registered address of the vendor.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="section-body">
+
+
+        
+
+        <div class="form-grid three-columns">
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Address Line 1
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              home
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              formControlName="addressLine1"
+            />
+
+            @if (form.addressLine1.hasError('required')) {
+
+              <mat-error>
+                Address is required
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Address Line 2
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              home_work
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              formControlName="addressLine2"
+            />
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              City
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              location_city
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              formControlName="city"
+            />
+
+            @if (form.city.hasError('required')) {
+
+              <mat-error>
+                City is required
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+        </div>
+
+
+        
+
+        <div class="form-grid three-columns">
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              State
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              map
+            </mat-icon>
+
+            <mat-select
+              formControlName="state"
+            >
+
+              @for (
+                state of states;
+                track state
+              ) {
+
+                <mat-option [value]="state">
+                  {{ state }}
+                </mat-option>
+
+              }
+
+            </mat-select>
+
+            @if (form.state.hasError('required')) {
+
+              <mat-error>
+                State is required
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              PIN Code
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              pin_drop
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              maxlength="6"
+              formControlName="pinCode"
+            />
+
+            @if (form.pinCode.hasError('pattern')) {
+
+              <mat-error>
+                Enter a valid 6 digit PIN
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    
+
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+
+          <mat-icon>
+            people
+          </mat-icon>
+
+        </div>
+
+
+        <div class="section-heading">
+
+          <h2>
+            Contact Information
+          </h2>
+
+          <p>
+            Enter the primary contact details of the vendor.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="section-body">
+
+
+        <div class="form-grid four-columns">
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Contact Person
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              person
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              formControlName="contactPerson"
+            />
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Email Address
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              email
+            </mat-icon>
+
+            <input
+              matInput
+              type="email"
+              formControlName="emailAddress"
+            />
+
+            @if (form.emailAddress.hasError('required')) {
+
+              <mat-error>
+                Email is required
+              </mat-error>
+
+            }
+
+            @if (form.emailAddress.hasError('email')) {
+
+              <mat-error>
+                Enter a valid email address
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Phone Number
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              phone
+            </mat-icon>
+
+            <input
+              matInput
+              type="tel"
+              formControlName="phoneNumber"
+            />
+
+            @if (form.phoneNumber.hasError('required')) {
+
+              <mat-error>
+                Phone number is required
+              </mat-error>
+
+            }
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Alternate Phone Number
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              phone_in_talk
+            </mat-icon>
+
+            <input
+              matInput
+              type="tel"
+              formControlName="alternatePhoneNumber"
+            />
+
+          </mat-form-field>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    
+
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+
+          <mat-icon>
+            note_alt
+          </mat-icon>
+
+        </div>
+
+
+        <div class="section-heading">
+
+          <h2>
+            Additional Details
+          </h2>
+
+          <p>
+            Optional information for better vendor management.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="section-body">
+
+
+        <div class="form-grid additional-grid">
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Payment Terms
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              payments
+            </mat-icon>
+
+            <mat-select
+              formControlName="paymentTerms"
+            >
+
+              @for (
+                term of paymentTerms;
+                track term
+              ) {
+
+                <mat-option [value]="term">
+                  {{ term }}
+                </mat-option>
+
+              }
+
+            </mat-select>
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Currency
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              currency_rupee
+            </mat-icon>
+
+            <mat-select
+              formControlName="currency"
+            >
+
+              @for (
+                currency of currencies;
+                track currency.code
+              ) {
+
+                <mat-option [value]="currency.code">
+
+                  {{ currency.code }}
+                  -
+                  {{ currency.name }}
+
+                </mat-option>
+
+              }
+
+            </mat-select>
+
+          </mat-form-field>
+
+
+          
+
+          <mat-form-field
+            appearance="outline"
+            class="material-field remarks-field"
+            subscriptSizing="dynamic"
+          >
+
+            <mat-label>
+              Remarks
+            </mat-label>
+
+            <mat-icon matIconPrefix>
+              notes
+            </mat-icon>
+
+            <textarea
+              matInput
+              rows="1"
+              formControlName="remarks"
+            ></textarea>
+
+          </mat-form-field>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        mat-stroked-button
+        class="cancel-button"
+        [disabled]="isLoading"
+        (click)="cancel()"
+      >
+
+        <mat-icon>
+          close
+        </mat-icon>
+
+        <span>
+          Cancel
+        </span>
+
+      </button>
+
+
+      <button
+        type="submit"
+        mat-flat-button
+        class="save-button"
+        [disabled]="isLoading"
+      >
+
+        @if (isLoading) {
+
+          <mat-spinner
+            diameter="20"
+          ></mat-spinner>
+
+          <span>
+            Saving...
+          </span>
+
+        } @else {
+
+          <mat-icon>
+            save
+          </mat-icon>
+
+          <span>
+            Save Vendor
+          </span>
+
+        }
+
+      </button>
+
+    </div>
+
+  </form>
+
+</div>

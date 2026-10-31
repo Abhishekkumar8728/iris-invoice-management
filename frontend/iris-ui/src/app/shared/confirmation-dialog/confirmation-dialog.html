@@ -1,0 +1,75 @@
+@if (state$ | async; as state) {
+
+  @if (state.visible && state.config) {
+
+    <div
+      class="dialog-backdrop"
+      (click)="cancel()"
+    >
+
+      <div
+        class="confirmation-dialog"
+        role="dialog"
+        aria-modal="true"
+        (click)="$event.stopPropagation()"
+      >
+
+        <div class="dialog-icon"
+          [class.danger]="state.config.type === 'danger'"
+          [class.warning]="state.config.type === 'warning'"
+          [class.info]="state.config.type === 'info'"
+          [class.success]="state.config.type === 'success'"
+        >
+
+          <i
+            class="bi"
+            [class]="getIcon(state.config.type)"
+          ></i>
+
+        </div>
+
+        <div class="dialog-content">
+
+          <h5>
+            {{ state.config.title }}
+          </h5>
+
+          <p>
+            {{ state.config.message }}
+          </p>
+
+        </div>
+
+        <div class="dialog-actions">
+
+          <button
+            type="button"
+            class="btn btn-light"
+            (click)="cancel()"
+          >
+            {{ state.config.cancelText || 'Cancel' }}
+          </button>
+
+          <button
+            type="button"
+            class="btn"
+            [class.btn-danger]="state.config.type === 'danger'"
+            [class.btn-warning]="state.config.type === 'warning'"
+            [class.btn-primary]="
+              state.config.type !== 'danger' &&
+              state.config.type !== 'warning'
+            "
+            (click)="confirm()"
+          >
+            {{ state.config.confirmText || 'Confirm' }}
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+}

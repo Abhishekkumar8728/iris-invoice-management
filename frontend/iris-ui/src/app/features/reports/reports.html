@@ -1,0 +1,397 @@
+
+<div class="reports-page">
+
+  
+  <div class="breadcrumb">
+    <span>Workspace</span>
+    <mat-icon>chevron_right</mat-icon>
+    <span class="breadcrumb-active">Reports</span>
+  </div>
+
+  
+  <section class="reports-heading">
+    <div class="heading-copy">
+      <h1>{{ pageTitle }}</h1>
+      <p>View and analyze your invoice, vendor and payment reports.</p>
+    </div>
+
+    <div class="heading-actions">
+
+      
+      <mat-form-field
+        appearance="outline"
+        class="date-field"
+        subscriptSizing="dynamic"
+      >
+        <mat-label>Invoice Date From</mat-label>
+
+        <input
+          matInput
+          [matDatepicker]="fromPicker"
+          [(ngModel)]="dateFrom"
+          (dateChange)="onDateRangeChange()"
+          aria-label="Invoice Date From"
+          placeholder="Select start date"
+        />
+
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="fromPicker"
+        ></mat-datepicker-toggle>
+
+        <mat-datepicker
+          #fromPicker
+          panelClass="iris-calendar-panel"
+        ></mat-datepicker>
+      </mat-form-field>
+
+      
+      <mat-form-field
+        appearance="outline"
+        class="date-field"
+        subscriptSizing="dynamic"
+      >
+        <mat-label>Invoice Date To</mat-label>
+
+        <input
+          matInput
+          [matDatepicker]="toPicker"
+          [(ngModel)]="dateTo"
+          (dateChange)="onDateRangeChange()"
+          aria-label="Invoice Date To"
+          placeholder="Select end date"
+        />
+
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="toPicker"
+        ></mat-datepicker-toggle>
+
+        <mat-datepicker
+          #toPicker
+          panelClass="iris-calendar-panel"
+        ></mat-datepicker>
+      </mat-form-field>
+
+      
+      <button
+        type="button"
+        class="export-button"
+        [disabled]="isLoading || !dateFrom || !dateTo"
+        (click)="exportReport()"
+      >
+        <mat-icon>download</mat-icon>
+        <span>Export</span>
+      </button>
+
+    </div>
+  </section>
+
+  
+  @if (isLoading) {
+    <div class="report-message loading-message" role="status">
+      <span class="loading-spinner"></span>
+      Loading {{ pageTitle.toLowerCase() }}...
+    </div>
+  }
+
+  
+  <section class="summary-grid">
+
+    <article class="summary-card total-card">
+      <div class="summary-icon cyan">
+        <mat-icon>groups</mat-icon>
+      </div>
+      <div class="summary-content">
+        <span class="summary-label">Total Records</span>
+        <strong>{{ formatNumber(summary.total) }}</strong>
+        <small>{{ pageTitle }}</small>
+      </div>
+    </article>
+
+    <article class="summary-card amount-card">
+      <div class="summary-icon green">
+        <mat-icon>currency_rupee</mat-icon>
+      </div>
+      <div class="summary-content">
+        <span class="summary-label">Total Amount (INR)</span>
+        <strong>{{ formatCurrency(summary.totalAmount) }}</strong>
+        <small>For selected date range</small>
+      </div>
+    </article>
+
+    <article class="summary-card paid-card">
+      <div class="summary-icon green">
+        <mat-icon>task_alt</mat-icon>
+      </div>
+      <div class="summary-content">
+        <span class="summary-label">Paid / Completed</span>
+        <strong>{{ formatNumber(summary.paid) }}</strong>
+        <small>Completed records</small>
+      </div>
+    </article>
+
+    <article class="summary-card pending-card">
+      <div class="summary-icon red">
+        <mat-icon>hourglass_top</mat-icon>
+      </div>
+      <div class="summary-content">
+        <span class="summary-label">Pending</span>
+        <strong>{{ formatNumber(summary.pending) }}</strong>
+        <small>Awaiting action</small>
+      </div>
+    </article>
+
+  </section>
+
+  
+  <nav class="report-tabs" aria-label="Report categories">
+    @for (tab of tabs; track tab.id) {
+      <button
+        type="button"
+        class="report-tab"
+        [class.active]="activeTab === tab.id"
+        [attr.aria-selected]="activeTab === tab.id"
+        (click)="selectTab(tab.id)"
+      >
+        {{ tab.label }}
+      </button>
+    }
+  </nav>
+
+  
+  <section class="charts-grid">
+
+    
+    <article class="chart-card trend-card">
+      <div class="chart-header">
+        <h2>{{ trendTitle }}</h2>
+        <span class="chart-period-label">
+          {{ selectedPeriod | titlecase }}
+        </span>
+      </div>
+
+      <div class="chart-legend">
+        <span>
+          <i class="legend-dot submitted-dot"></i>
+          Submitted
+        </span>
+        <span>
+          <i class="legend-dot completed-dot"></i>
+          Completed
+        </span>
+      </div>
+
+      @if (trend.length > 0) {
+        <div class="line-chart">
+          <div class="y-labels">
+            <span>Max</span>
+            <span>75%</span>
+            <span>50%</span>
+            <span>25%</span>
+            <span>0</span>
+          </div>
+
+          <svg
+            class="trend-svg"
+            viewBox="0 0 384 160"
+            preserveAspectRatio="none"
+            role="img"
+            [attr.aria-label]="trendTitle"
+          >
+            <defs>
+              <linearGradient
+                id="submittedFill"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop
+                  offset="0%"
+                  stop-color="#00d9a0"
+                  stop-opacity=".2"
+                />
+                <stop
+                  offset="100%"
+                  stop-color="#00d9a0"
+                  stop-opacity="0"
+                />
+              </linearGradient>
+
+              <linearGradient
+                id="completedFill"
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
+                <stop
+                  offset="0%"
+                  stop-color="#20a9ff"
+                  stop-opacity=".2"
+                />
+                <stop
+                  offset="100%"
+                  stop-color="#20a9ff"
+                  stop-opacity="0"
+                />
+              </linearGradient>
+            </defs>
+
+            <line
+              x1="12" y1="15" x2="372" y2="15"
+              class="chart-gridline"
+            />
+            <line
+              x1="12" y1="48" x2="372" y2="48"
+              class="chart-gridline"
+            />
+            <line
+              x1="12" y1="81" x2="372" y2="81"
+              class="chart-gridline"
+            />
+            <line
+              x1="12" y1="114" x2="372" y2="114"
+              class="chart-gridline"
+            />
+            <line
+              x1="12" y1="150" x2="372" y2="150"
+              class="chart-gridline"
+            />
+
+            <polygon
+              [attr.points]="getTrendArea('submitted')"
+              fill="url(#submittedFill)"
+            />
+            <polygon
+              [attr.points]="getTrendArea('completed')"
+              fill="url(#completedFill)"
+            />
+
+            <polyline
+              [attr.points]="getTrendPoints('submitted')"
+              class="submitted-line"
+            />
+            <polyline
+              [attr.points]="getTrendPoints('completed')"
+              class="completed-line"
+            />
+
+            @for (point of trend; track point.label; let i = $index) {
+              <circle
+                [attr.cx]="getTrendX(i)"
+                [attr.cy]="getTrendY(point.submitted)"
+                r="2.5"
+                class="submitted-point"
+              />
+              <circle
+                [attr.cx]="getTrendX(i)"
+                [attr.cy]="getTrendY(point.completed)"
+                r="2.5"
+                class="completed-point"
+              />
+            }
+          </svg>
+
+          <div class="x-labels">
+            @for (point of trend; track point.label) {
+              <span>{{ point.label }}</span>
+            }
+          </div>
+        </div>
+      } @else if (!isLoading && !errorMessage) {
+        <div class="empty-chart">
+          <mat-icon>query_stats</mat-icon>
+          <span>No trend data for this date range.</span>
+        </div>
+      }
+    </article>
+
+    
+    <article class="chart-card distribution-card">
+      <div class="chart-header">
+        <h2>{{ distributionTitle }}</h2>
+      </div>
+
+      @if (statusDistribution.length > 0) {
+        <div class="distribution-content">
+
+          <div class="donut-wrap">
+            <svg
+              class="donut-chart"
+              viewBox="0 0 180 180"
+              role="img"
+              [attr.aria-label]="distributionTitle"
+            >
+              <circle
+                class="donut-track"
+                cx="90"
+                cy="90"
+                r="65"
+              />
+
+              @for (segment of getDonutSegments(); track segment.label) {
+                <circle
+                  class="donut-segment"
+                  cx="90"
+                  cy="90"
+                  r="65"
+                  [attr.stroke]="segment.color"
+                  [attr.stroke-dasharray]="segment.dashArray"
+                  [attr.stroke-dashoffset]="segment.dashOffset"
+                />
+              }
+
+              <text
+                x="90"
+                y="84"
+                class="donut-total"
+              >
+                {{ formatNumber(summary.total) }}
+              </text>
+
+              <text
+                x="90"
+                y="104"
+                class="donut-caption"
+              >
+                Total Records
+              </text>
+            </svg>
+          </div>
+
+          <div class="distribution-legend">
+            @for (item of statusDistribution; track item.label) {
+              <div class="distribution-row">
+                <span
+                  class="distribution-dot"
+                  [style.background]="item.color"
+                ></span>
+
+                <span class="distribution-name">
+                  {{ item.label }}
+                </span>
+
+                <strong>{{ formatNumber(item.value) }}</strong>
+
+                <small>
+                  ({{ summary.total > 0
+                    ? ((item.value / summary.total) * 100).toFixed(1)
+                    : '0' }}%)
+                </small>
+              </div>
+            }
+          </div>
+
+        </div>
+      } @else if (!isLoading && !errorMessage) {
+        <div class="empty-chart">
+          <mat-icon>donut_large</mat-icon>
+          <span>No status data for this date range.</span>
+        </div>
+      }
+    </article>
+
+  </section>
+</div>

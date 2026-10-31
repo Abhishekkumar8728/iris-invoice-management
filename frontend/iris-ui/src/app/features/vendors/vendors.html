@@ -1,0 +1,614 @@
+<div class="vendors-page">
+
+    
+
+    <div class="page-header">
+
+        <div class="page-heading">
+
+            
+
+            <div class="breadcrumb">
+
+                <span>
+                    Workspace
+                </span>
+
+                <i class="bi bi-chevron-right"></i>
+
+                <span class="active">
+                    Vendors
+                </span>
+
+            </div>
+
+
+            
+
+            <h1>
+                Vendors
+            </h1>
+
+
+            
+
+            <p>
+                Manage and view all your registered vendors.
+            </p>
+
+        </div>
+
+
+        
+
+        <button type="button" mat-flat-button class="add-vendor-button" routerLink="/vendors/create">
+
+            <mat-icon>
+                add
+            </mat-icon>
+
+            <span>
+                Add Vendor
+            </span>
+
+        </button>
+
+    </div>
+
+
+    
+
+    <section class="stats-grid">
+
+
+        
+
+        <article class="stat-card stat-total">
+
+            <div class="stat-icon">
+
+                <mat-icon>
+                    groups
+                </mat-icon>
+
+            </div>
+
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Total Vendors
+                </span>
+
+                <strong class="stat-value">
+                    {{ totalVendors }}
+                </strong>
+
+                <span class="stat-description">
+                    All registered vendors
+                </span>
+
+            </div>
+
+        </article>
+
+
+        
+
+        <article class="stat-card stat-active">
+
+            <div class="stat-icon">
+
+                <mat-icon>
+                    person_check
+                </mat-icon>
+
+            </div>
+
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Active Vendors
+                </span>
+
+                <strong class="stat-value">
+                    {{ activeVendors }}
+                </strong>
+
+                <span class="stat-description">
+                    Currently active
+                </span>
+
+            </div>
+
+        </article>
+
+
+        
+
+        <article class="stat-card stat-inactive">
+
+            <div class="stat-icon">
+
+                <mat-icon>
+                    person_off
+                </mat-icon>
+
+            </div>
+
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    Inactive Vendors
+                </span>
+
+                <strong class="stat-value">
+                    {{ inactiveVendors }}
+                </strong>
+
+                <span class="stat-description">
+                    Not active
+                </span>
+
+            </div>
+
+        </article>
+
+
+        
+
+        <article class="stat-card stat-new">
+
+            <div class="stat-icon">
+
+                <mat-icon>
+                    person_add
+                </mat-icon>
+
+            </div>
+
+
+            <div class="stat-content">
+
+                <span class="stat-label">
+                    New Vendors
+                </span>
+
+                <strong class="stat-value">
+                    {{ newVendors }}
+                </strong>
+
+                <span class="stat-description">
+                    Added this month
+                </span>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    
+
+    <section class="filter-card">
+
+        <form [formGroup]="filterForm" (ngSubmit)="applyFilters()">
+
+            <div class="filter-grid">
+
+
+                
+
+                <mat-form-field
+                    appearance="outline"
+                    class="search-field material-field"
+                    subscriptSizing="dynamic"
+                >
+
+                    <mat-icon matIconPrefix>
+                        search
+                    </mat-icon>
+
+                    <mat-label>Search Vendors</mat-label>
+
+                    <input matInput type="text" formControlName="search" />
+
+                </mat-form-field>
+
+
+                
+
+                <mat-form-field
+                    appearance="outline"
+                    class="status-field material-field"
+                    subscriptSizing="dynamic"
+                >
+
+                    <mat-icon matIconPrefix>toggle_on</mat-icon>
+
+                    <mat-label>Status</mat-label>
+
+                    <mat-select formControlName="status">
+
+                        <mat-option value="ALL">
+                            All Status
+                        </mat-option>
+
+                        <mat-option value="ACTIVE">
+                            Active
+                        </mat-option>
+
+                        <mat-option value="INACTIVE">
+                            Inactive
+                        </mat-option>
+
+                    </mat-select>
+
+                </mat-form-field>
+
+
+                
+
+                <mat-form-field
+                    appearance="outline"
+                    class="country-field material-field"
+                    subscriptSizing="dynamic"
+                >
+
+                    <mat-icon matIconPrefix>public</mat-icon>
+
+                    <mat-label>Country</mat-label>
+
+                    <mat-select formControlName="country">
+
+                        <mat-option value="ALL">
+                            All Countries
+                        </mat-option>
+
+                        @for (
+                        country of countries;
+                        track country
+                        ) {
+
+                        <mat-option [value]="country">
+                            {{ country }}
+                        </mat-option>
+
+                        }
+
+                    </mat-select>
+
+                </mat-form-field>
+
+
+                
+
+                <button type="button" mat-stroked-button class="reset-button" (click)="resetFilters()">
+
+                    <mat-icon>
+                        refresh
+                    </mat-icon>
+
+                    Reset
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    
+
+    <section class="vendor-table-card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                
+
+                <thead>
+
+                    <tr>
+
+                        <th class="number-column">
+                            #
+                        </th>
+
+                        <th>
+                            Vendor Code
+                        </th>
+
+                        <th>
+                            Vendor Name
+                        </th>
+
+                        <th>
+                            GST Number
+                        </th>
+
+                        <th>
+                            Country
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th class="actions-column">
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                
+
+                <tbody>
+
+                    @for (
+                    vendor of paginatedVendors;
+                    track vendor.id;
+                    let index = $index
+                    ) {
+
+                    <tr>
+
+                        
+
+                        <td class="number-column">
+
+                            {{
+                            ((currentPage - 1) * pageSize) +
+                            index +
+                            1
+                            }}
+
+                        </td>
+
+
+                        
+
+                        <td class="vendor-code">
+
+                            {{ vendor.vendorCode }}
+
+                        </td>
+
+
+                        
+
+                        <td class="vendor-name">
+
+                            {{ vendor.vendorName }}
+
+                        </td>
+
+
+                        
+
+                        <td>
+
+                            {{ vendor.gstNumber }}
+
+                        </td>
+
+
+                        
+
+                        <td>
+
+                            {{ vendor.country }}
+
+                        </td>
+
+
+                        
+
+                        <td>
+
+                            <span class="status-badge" [class]="getStatusClass(vendor.status)">
+
+                                <span class="status-dot"></span>
+
+                                {{ getStatusLabel(vendor.status) }}
+
+                            </span>
+
+                        </td>
+
+
+                        
+
+                        <td class="actions-cell">
+
+                            
+
+                            <button type="button" class="table-action" title="View" (click)="viewVendor(vendor)">
+
+                                <i class="bi bi-eye"></i>
+
+                            </button>
+
+
+                            
+
+                            <button type="button" class="table-action" title="Edit" (click)="editVendor(vendor)">
+
+                                <i class="bi bi-pencil"></i>
+
+                            </button>
+
+
+                            
+
+                            <button type="button" class="table-action" title="More">
+
+                                <i class="bi bi-three-dots"></i>
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+
+                    
+
+                    @if (
+                    paginatedVendors.length === 0
+                    ) {
+
+                    <tr>
+
+                        <td colspan="7" class="empty-row">
+
+                            <mat-icon>
+                                search_off
+                            </mat-icon>
+
+                            <span>
+                                No vendors found.
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        
+
+        <div class="table-footer">
+
+
+            
+
+            <div class="entries-selector">
+
+                <span>
+                    Show
+                </span>
+
+                <select [value]="pageSize" (change)="
+            pageSize = +$any($event.target).value;
+            currentPage = 1
+          ">
+
+                    <option value="5">
+                        5
+                    </option>
+
+                    <option value="10">
+                        10
+                    </option>
+
+                    <option value="20">
+                        20
+                    </option>
+
+                    <option value="50">
+                        50
+                    </option>
+
+                </select>
+
+                <span>
+                    entries
+                </span>
+
+            </div>
+
+
+            
+
+            <div class="pagination">
+
+
+                
+
+                <button type="button" class="page-button page-arrow" [disabled]="currentPage === 1"
+                    (click)="previousPage()">
+
+                    <i class="bi bi-chevron-left"></i>
+
+                </button>
+
+
+                
+
+                @for (
+                page of pages;
+                track page
+                ) {
+
+                <button type="button" class="page-button" [class.active]="page === currentPage"
+                    (click)="goToPage(page)">
+
+                    {{ page }}
+
+                </button>
+
+                }
+
+
+                
+
+                <button type="button" class="page-button page-arrow" [disabled]="currentPage === totalPages"
+                    (click)="nextPage()">
+
+                    <i class="bi bi-chevron-right"></i>
+
+                </button>
+
+            </div>
+
+
+            
+
+            <div class="table-summary">
+
+                Showing
+
+                <strong>
+                    {{ showingFrom }}
+                </strong>
+
+                to
+
+                <strong>
+                    {{ showingTo }}
+                </strong>
+
+                of
+
+                <strong>
+                    {{ filteredVendors.length }}
+                </strong>
+
+                entries
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>

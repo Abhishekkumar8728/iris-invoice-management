@@ -1,0 +1,155 @@
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 10000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.72);
+
+  animation: fade-in 0.15s ease-out;
+}
+
+.confirmation-dialog {
+  width: 100%;
+  max-width: 440px;
+
+  background: linear-gradient(145deg, #0c201d, #071513);
+  color: var(--iris-text);
+
+  border: 1px solid var(--iris-border);
+  border-radius: 14px;
+
+  padding: 28px;
+
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.55);
+
+  animation: dialog-in 0.2s ease-out;
+}
+
+.dialog-icon {
+  width: 56px;
+  height: 56px;
+
+  margin-bottom: 18px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+
+  &.danger {
+    background: rgba(255, 125, 115, 0.14);
+    color: #ff9a91;
+  }
+
+  &.warning {
+    background: rgba(249, 215, 126, 0.14);
+    color: #f9d77e;
+  }
+
+  &.info {
+    background: rgba(75, 181, 192, 0.14);
+    color: #78d6df;
+  }
+
+  &.success {
+    background: rgba(115, 217, 199, 0.14);
+    color: #73d9c7;
+  }
+}
+
+.dialog-content {
+
+  h5 {
+    margin: 0 0 8px;
+
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+
+    color: var(--iris-muted);
+
+    font-size: 14px;
+    line-height: 1.6;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  margin-top: 26px;
+
+  .btn {
+    min-width: 95px;
+  }
+
+  .btn-light {
+    border: 1px solid var(--iris-border);
+    background: rgba(110, 225, 203, 0.08);
+    color: var(--iris-text);
+  }
+
+  .btn-light:hover {
+    border-color: var(--iris-cyan-600);
+    background: rgba(110, 225, 203, 0.14);
+    color: var(--iris-text);
+  }
+}
+
+@keyframes fade-in {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+
+}
+
+@keyframes dialog-in {
+
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+}
+
+@media (max-width: 576px) {
+
+  .confirmation-dialog {
+    padding: 22px;
+  }
+
+  .dialog-actions {
+    flex-direction: column-reverse;
+
+    .btn {
+      width: 100%;
+    }
+  }
+
+}

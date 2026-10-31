@@ -1,0 +1,386 @@
+
+<div class="dashboard-page">
+  <div class="dashboard-shell">
+
+    
+    <header class="dashboard-header">
+      <div>
+        <div class="eyebrow">IRIS · INVOICE MANAGEMENT</div>
+        <h1>Welcome</h1>
+        <p>Here's an overview of your invoice management system.</p>
+      </div>
+
+      <div class="header-actions">
+        <span class="update-indicator">
+          <span class="live-dot"></span>
+          {{ isRefreshing ? 'Refreshing…' : 'Dashboard' }}
+        </span>
+
+        <button
+          class="refresh-button"
+          type="button"
+          (click)="refreshDashboard()"
+          [disabled]="isLoading || isRefreshing">
+          <span class="refresh-symbol">↻</span>
+          Refresh
+        </button>
+      </div>
+    </header>
+
+  
+
+    
+    <section class="summary-grid" aria-label="Invoice summary">
+
+      <article class="summary-card card-total">
+        <div class="summary-icon">▤</div>
+        <div class="summary-copy">
+          <span>Total Invoices</span>
+          <strong>{{ animatedTotalInvoices | number }}</strong>
+          <small>All invoice records</small>
+        </div>
+        <span class="card-glow"></span>
+      </article>
+
+      <article class="summary-card card-submitted">
+        <div class="summary-icon">➤</div>
+        <div class="summary-copy">
+          <span>Submitted</span>
+          <strong>{{ animatedSubmitted | number }}</strong>
+          <small>Awaiting processing</small>
+        </div>
+        <span class="card-glow"></span>
+      </article>
+
+      <article class="summary-card card-process">
+        <div class="summary-icon">⚙</div>
+        <div class="summary-copy">
+          <span>In Process</span>
+          <strong>{{ animatedInProcess | number }}</strong>
+          <small>Review, approval & processing</small>
+        </div>
+        <span class="card-glow"></span>
+      </article>
+
+      <article class="summary-card card-paid">
+        <div class="summary-icon">✓</div>
+        <div class="summary-copy">
+          <span>Paid</span>
+          <strong>{{ animatedPaid | number }}</strong>
+          <small>Payment completed</small>
+        </div>
+        <span class="card-glow"></span>
+      </article>
+
+      <article class="summary-card card-rejected">
+        <div class="summary-icon">×</div>
+        <div class="summary-copy">
+          <span>Rejected</span>
+          <strong>{{ animatedRejected | number }}</strong>
+          <small>Rejected invoices</small>
+        </div>
+        <span class="card-glow"></span>
+      </article>
+
+      <article class="summary-card card-cancelled">
+        <div class="summary-icon">⊘</div>
+        <div class="summary-copy">
+          <span>Cancelled</span>
+          <strong>{{ animatedCancelled | number }}</strong>
+          <small>Cancelled invoices</small>
+        </div>
+        <span class="card-glow"></span>
+      </article>
+
+    </section>
+
+    
+    <section class="panel lifecycle-panel">
+      <div class="panel-heading">
+        <div>
+          <div class="section-kicker">LIVE WORKFLOW</div>
+          <h2><span class="heading-pulse"></span> Invoice Lifecycle</h2>
+          <p>Follow the path from creation to payment or an exception.</p>
+        </div>
+
+      </div>
+
+      <div
+        class="workflow"
+        [class.workflow-paused]="!workflowRunning">
+
+        <div class="workflow-main-line">
+          <span class="workflow-particle particle-one"></span>
+          <span class="workflow-particle particle-two"></span>
+        </div>
+
+        <div class="workflow-stage">
+          <div class="stage-node node-draft">
+            <span class="stage-icon">▤</span>
+          </div>
+          <strong>Draft</strong>
+          <small>Created</small>
+          <span class="stage-count">{{ stats.draft | number }}</span>
+        </div>
+
+        <div class="workflow-connector"><span></span></div>
+
+        <div class="workflow-stage">
+          <div class="stage-node node-submitted">
+            <span class="stage-icon">➤</span>
+          </div>
+          <strong>Submitted</strong>
+          <small>Sent for review</small>
+          <span class="stage-count">{{ stats.submitted | number }}</span>
+        </div>
+
+        <div class="workflow-connector"><span></span></div>
+
+        <div class="workflow-stage">
+          <div class="stage-node node-review">
+            <span class="stage-icon">⚙</span>
+          </div>
+          <strong>Under Review</strong>
+          <small>Being verified</small>
+          <span class="stage-count">{{ stats.underReview | number }}</span>
+        </div>
+
+        <div class="workflow-connector"><span></span></div>
+
+        <div class="workflow-stage">
+          <div class="stage-node node-approved">
+            <span class="stage-icon">✓</span>
+          </div>
+          <strong>Approved</strong>
+          <small>Accepted</small>
+          <span class="stage-count">{{ stats.approved | number }}</span>
+        </div>
+
+        <div class="workflow-connector"><span></span></div>
+
+        <div class="workflow-stage">
+          <div class="stage-node node-processed">
+            <span class="stage-icon">₹</span>
+          </div>
+          <strong>Processed</strong>
+          <small>Payment prepared</small>
+          <span class="stage-count">{{ stats.processed | number }}</span>
+        </div>
+
+        <div class="workflow-connector"><span></span></div>
+
+        <div class="workflow-stage">
+          <div class="stage-node node-paid">
+            <span class="stage-icon">✓</span>
+          </div>
+          <strong>Paid</strong>
+          <small>Completed</small>
+          <span class="stage-count">{{ stats.paid | number }}</span>
+        </div>
+      </div>
+
+      <div class="workflow-branches">
+        <div class="branch-label">Exception paths</div>
+
+        <div class="branch-card branch-rejected">
+          <span class="branch-icon">×</span>
+          <div>
+            <strong>Rejected</strong>
+            <small>Invoice did not pass review</small>
+          </div>
+          <b>{{ stats.rejected | number }}</b>
+        </div>
+
+        <div class="branch-card branch-cancelled">
+          <span class="branch-icon">⊘</span>
+          <div>
+            <strong>Cancelled</strong>
+            <small>Invoice was cancelled</small>
+          </div>
+          <b>{{ stats.cancelled | number }}</b>
+        </div>
+      </div>
+    </section>
+
+    
+    <section class="lower-grid">
+
+      
+      <article class="panel distribution-panel">
+        <div class="panel-heading compact-heading">
+          <div>
+            <h2>Invoice Status Distribution</h2>
+            <p>Breakdown by current status</p>
+          </div>
+        </div>
+
+        <div class="distribution-content">
+          <div
+            class="donut-chart"
+            [style.background]="
+              'conic-gradient(' +
+              '#0ea5e9 0% ' + getStatusPercent(stats.submitted) + '%, ' +
+              '#f97316 ' + getStatusPercent(stats.submitted) + '% ' +
+              (getStatusPercent(stats.submitted) + getStatusPercent(getInProcessCount())) + '%, ' +
+              '#10b981 ' +
+              (getStatusPercent(stats.submitted) + getStatusPercent(getInProcessCount())) + '% ' +
+              (getStatusPercent(stats.submitted) + getStatusPercent(getInProcessCount()) + getStatusPercent(stats.paid)) + '%, ' +
+              '#f43f5e ' +
+              (getStatusPercent(stats.submitted) + getStatusPercent(getInProcessCount()) + getStatusPercent(stats.paid)) + '% ' +
+              (getStatusPercent(stats.submitted) + getStatusPercent(getInProcessCount()) + getStatusPercent(stats.paid) + getStatusPercent(stats.rejected)) + '%, ' +
+              '#94a3b8 ' +
+              (getStatusPercent(stats.submitted) + getStatusPercent(getInProcessCount()) + getStatusPercent(stats.paid) + getStatusPercent(stats.rejected)) + '% 100%)'
+            ">
+            <div class="donut-center">
+              <strong>{{ stats.totalInvoices | number }}</strong>
+              <span>Total</span>
+            </div>
+          </div>
+
+          <div class="legend-list">
+            <div class="legend-item">
+              <span class="legend-dot dot-draft"></span>
+              <span>Draft</span>
+              <strong>{{ stats.draft | number }}</strong>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot dot-submitted"></span>
+              <span>Submitted</span>
+              <strong>{{ stats.submitted | number }}</strong>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot dot-process"></span>
+              <span>In Process</span>
+              <strong>{{ getInProcessCount() | number }}</strong>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot dot-paid"></span>
+              <span>Paid</span>
+              <strong>{{ stats.paid | number }}</strong>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot dot-rejected"></span>
+              <span>Rejected</span>
+              <strong>{{ stats.rejected | number }}</strong>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot dot-cancelled"></span>
+              <span>Cancelled</span>
+              <strong>{{ stats.cancelled | number }}</strong>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      
+      <article class="panel value-panel">
+        <div class="panel-heading compact-heading">
+          <div>
+            <h2>Invoice Value Overview</h2>
+            <p>Amounts returned by your dashboard API</p>
+          </div>
+        </div>
+
+        <div class="value-highlight">
+          <span class="value-label">Total Invoice Value</span>
+          <strong>{{ formatCurrency(animatedTotalValue) }}</strong>
+          <div class="value-bar">
+            <span></span>
+          </div>
+          <small>Value of invoices in the current API response</small>
+        </div>
+
+        <div class="value-stat-row">
+          <span class="value-status-dot paid-dot"></span>
+          <span>Paid invoices</span>
+          <strong>{{ stats.paid | number }}</strong>
+        </div>
+
+        <div class="value-stat-row">
+          <span class="value-status-dot pending-dot"></span>
+          <span>Submitted / under review</span>
+          <strong>
+            {{ (stats.submitted + stats.underReview) | number }}
+          </strong>
+        </div>
+
+        <div class="value-note">
+          <span>i</span>
+          Historical monthly amounts require a historical-data API.
+        </div>
+      </article>
+
+      
+      <article class="panel recent-panel">
+        <div class="panel-heading compact-heading">
+          <div>
+            <h2>Recent Invoices</h2>
+            <p>Latest invoices returned by the API</p>
+          </div>
+
+          <a class="subtle-button" routerLink="/invoices">
+            View All <span>→</span>
+          </a>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Invoice No.</th>
+                <th>Vendor</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th class="amount-column">Amount</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr
+                *ngFor="let invoice of stats.recentInvoices; trackBy: trackInvoice">
+                <td class="invoice-number">
+                  {{ invoiceNumber(invoice) }}
+                </td>
+                <td>{{ vendorName(invoice) }}</td>
+                <td>
+                  <span
+                    class="status-badge"
+                    [ngClass]="getStatusClass(invoiceStatus(invoice))">
+                    {{ getStatusLabel(invoiceStatus(invoice)) }}
+                  </span>
+                </td>
+                <td>
+                  {{
+                    invoiceDate(invoice)
+                      ? (invoiceDate(invoice) | date:'dd MMM yyyy')
+                      : '—'
+                  }}
+                </td>
+                <td class="amount-column">
+                  {{ formatCurrency(invoiceAmount(invoice)) }}
+                </td>
+              </tr>
+
+              <tr *ngIf="!isLoading && (stats.recentInvoices?.length ?? 0) === 0">
+                <td colspan="5" class="empty-state">
+                  No recent invoices were returned.
+                </td>
+              </tr>
+
+              <tr *ngIf="isLoading">
+                <td colspan="5" class="empty-state">
+                  Loading invoice data…
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer" *ngIf="lastUpdated">
+          Last updated {{ lastUpdated | date:'dd MMM, HH:mm:ss' }}
+        </div>
+      </article>
+
+    </section>
+  </div>
+</div>

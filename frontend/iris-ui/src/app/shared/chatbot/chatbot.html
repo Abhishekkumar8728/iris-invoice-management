@@ -1,0 +1,394 @@
+
+
+<button
+  *ngIf="!isOpen"
+  class="invoice-chatbot-launcher"
+  type="button"
+  aria-label="Open IRIS Invoice Assistant"
+  matTooltip="IRIS Invoice Assistant"
+  matTooltipClass="chatbot-launcher-tooltip"
+  (click)="toggleChat()"
+>
+  <mat-icon>receipt_long</mat-icon>
+  <span class="ai-badge">AI</span>
+</button>
+
+
+<section *ngIf="isOpen" class="chatbot-container">
+
+  
+  <header class="chatbot-header">
+    <div class="chatbot-header-left">
+      <div class="chatbot-invoice-logo">
+        <mat-icon>receipt_long</mat-icon>
+      </div>
+
+      <div class="chatbot-title-wrapper">
+        <div class="chatbot-title">IRIS Invoice Assistant</div>
+        <div class="chatbot-status">
+          <span class="status-dot"></span>
+          Invoice Assistant
+        </div>
+      </div>
+    </div>
+
+    <button
+      mat-icon-button
+      type="button"
+      class="close-button"
+      aria-label="Close chatbot"
+      (click)="closeChat()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </header>
+
+  
+  <main class="chatbot-messages">
+
+    <div
+      *ngFor="let item of messages; let i = index; trackBy: trackMessage"
+      class="message-row"
+      [class.user-row]="item.sender === 'user'"
+      [class.bot-row]="item.sender === 'bot'"
+    >
+
+      
+      <div *ngIf="item.sender === 'bot'" class="message-avatar">
+        <mat-icon>receipt_long</mat-icon>
+      </div>
+
+      
+      <div *ngIf="item.sender === 'bot'" class="bot-message-wrapper">
+
+        
+        <div
+          *ngIf="
+            item.type !== 'status-count' &&
+            item.type !== 'total-value' &&
+            item.type !== 'pending-value' &&
+            item.type !== 'paid-value' &&
+            item.type !== 'pending-count' &&
+            item.type !== 'stats' &&
+            item.type !== 'invoice'
+          "
+          class="message-bubble bot-message"
+          [class.error-message]="item.type === 'error'"
+        >
+          {{ item.message }}
+        </div>
+
+        
+        <div
+          *ngIf="item.type === 'status-count'"
+          class="message-bubble bot-message status-count-message"
+        >
+          <strong>{{ getStatusLabel(item.data?.status) }} Invoices:</strong>
+          {{ getStatusCount(item.data) }}
+        </div>
+
+        
+        <article
+          *ngIf="item.type === 'total-value'"
+          class="invoice-info-card total-card"
+        >
+          <div class="info-card-icon">
+            <mat-icon>account_balance_wallet</mat-icon>
+          </div>
+
+          <div class="info-card-content">
+            <span class="info-card-label">Total Invoice Value</span>
+
+            <strong class="info-card-value currency-value">
+              {{ getTotalValue(item.data) | currency:'INR':'symbol':'1.0-2' }}
+            </strong>
+
+            <span class="info-card-caption">
+              Total value of invoices
+            </span>
+          </div>
+        </article>
+
+        
+        <article
+          *ngIf="item.type === 'pending-value'"
+          class="invoice-info-card pending-card"
+        >
+          <div class="info-card-icon">
+            <mat-icon>pending_actions</mat-icon>
+          </div>
+
+          <div class="info-card-content">
+            <span class="info-card-label">Pending Invoice Value</span>
+
+            <strong class="info-card-value currency-value">
+              {{ getPendingValue(item.data) | currency:'INR':'symbol':'1.0-2' }}
+            </strong>
+
+            <span class="info-card-caption">
+              Amount still pending
+            </span>
+          </div>
+        </article>
+
+        
+        <article
+          *ngIf="item.type === 'paid-value'"
+          class="invoice-info-card paid-card"
+        >
+          <div class="info-card-icon">
+            <mat-icon>payments</mat-icon>
+          </div>
+
+          <div class="info-card-content">
+            <span class="info-card-label">Paid Invoice Value</span>
+
+            <strong class="info-card-value currency-value">
+              {{ getPaidValue(item.data) | currency:'INR':'symbol':'1.0-2' }}
+            </strong>
+
+            <span class="info-card-caption">
+              Total paid amount
+            </span>
+          </div>
+        </article>
+
+        
+        <article
+          *ngIf="item.type === 'pending-count'"
+          class="invoice-info-card pending-card"
+        >
+          <div class="info-card-icon">
+            <mat-icon>pending_actions</mat-icon>
+          </div>
+
+          <div class="info-card-content">
+            <span class="info-card-label">Pending Invoices</span>
+
+            <strong class="info-card-value">
+              {{ getPendingCount(item.data) }}
+            </strong>
+          </div>
+        </article>
+
+        
+        <article
+          *ngIf="item.type === 'stats'"
+          class="summary-card"
+        >
+          <div class="summary-card-header">
+            <div>
+              <span class="card-eyebrow">DASHBOARD OVERVIEW</span>
+              <h3>Invoice Summary</h3>
+            </div>
+
+            <mat-icon>analytics</mat-icon>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-item">
+              <span>Total Invoices</span>
+              <strong>{{ getStatValue(item.data, 'totalInvoices') }}</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Draft</span>
+              <strong>{{ getStatValue(item.data, 'draftCount') }}</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Submitted</span>
+              <strong>{{ getStatValue(item.data, 'submittedCount') }}</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Under Review</span>
+              <strong>{{ getStatValue(item.data, 'reviewCount') }}</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Approved</span>
+              <strong>{{ getStatValue(item.data, 'approvedCount') }}</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Rejected</span>
+              <strong>{{ getStatValue(item.data, 'rejectedCount') }}</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Processed</span>
+              <strong>{{ getStatValue(item.data, 'processedCount') }}</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Paid</span>
+              <strong>{{ getStatValue(item.data, 'paidCount') }}</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Cancelled</span>
+              <strong>{{ getStatValue(item.data, 'cancelledCount') }}</strong>
+            </div>
+          </div>
+
+          <div class="summary-values">
+            <div>
+              <span>Total Value</span>
+              <strong>
+                {{ getTotalValue(item.data) | currency:'INR':'symbol':'1.0-2' }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Pending Value</span>
+              <strong>
+                {{ getPendingValue(item.data) | currency:'INR':'symbol':'1.0-2' }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Paid Value</span>
+              <strong>
+                {{ getPaidValue(item.data) | currency:'INR':'symbol':'1.0-2' }}
+              </strong>
+            </div>
+          </div>
+        </article>
+
+        
+        <article
+          *ngIf="item.type === 'invoice'"
+          class="summary-card invoice-details-card"
+        >
+          <div class="summary-card-header">
+            <div>
+              <span class="card-eyebrow">INVOICE DETAILS</span>
+              <h3>Invoice Information</h3>
+            </div>
+
+            <mat-icon>receipt_long</mat-icon>
+          </div>
+
+          <div class="invoice-detail-row">
+            <span>Invoice Number</span>
+            <strong>{{ item.data?.invoiceNumber || 'N/A' }}</strong>
+          </div>
+
+          <div class="invoice-detail-row">
+            <span>Vendor</span>
+            <strong>
+              {{ item.data?.vendorName || item.data?.vendor?.name || 'N/A' }}
+            </strong>
+          </div>
+
+          <div class="invoice-detail-row">
+            <span>Status</span>
+            <strong>{{ item.data?.status || 'N/A' }}</strong>
+          </div>
+
+          <div class="invoice-detail-row">
+            <span>Amount</span>
+            <strong>
+              {{
+                (
+                  item.data?.amounts?.totalAmount ??
+                  item.data?.totalAmount ??
+                  item.data?.amount ??
+                  0
+                ) | currency:'INR':'symbol':'1.0-2'
+              }}
+            </strong>
+          </div>
+
+          <div class="invoice-card-caption">
+            <mat-icon>info_outline</mat-icon>
+            <span>{{ item.message }}</span>
+          </div>
+        </article>
+
+      </div>
+
+      
+      <div
+        *ngIf="item.sender === 'user'"
+        class="message-bubble user-message"
+      >
+        {{ item.message }}
+      </div>
+
+      
+      <div
+        *ngIf="item.sender === 'user'"
+        class="message-avatar user-avatar"
+      >
+        <mat-icon>person</mat-icon>
+      </div>
+
+    </div>
+
+    
+    <div *ngIf="isLoading" class="message-row bot-row">
+      <div class="message-avatar">
+        <mat-icon>receipt_long</mat-icon>
+      </div>
+
+      <div class="message-bubble bot-message typing-message">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+    
+    <div
+      class="suggestions"
+      *ngIf="messages.length === 1 && !isLoading"
+    >
+      <div class="suggestions-title">Try asking</div>
+
+      <button
+        *ngFor="let question of suggestedQuestions"
+        mat-stroked-button
+        type="button"
+        class="suggestion-button"
+        (click)="sendMessage(question)"
+      >
+        {{ question }}
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+
+  </main>
+
+  
+  <footer class="chatbot-input-area">
+    <mat-form-field appearance="outline" class="chat-input">
+      <mat-label>Ask about your invoices</mat-label>
+
+      <input
+        matInput
+        type="text"
+        [(ngModel)]="userMessage"
+        [disabled]="isLoading"
+        (keydown)="handleKeyDown($event)"
+      />
+
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        aria-label="Send message"
+        [disabled]="!userMessage.trim() || isLoading"
+        (click)="sendMessage()"
+      >
+        <mat-icon>send</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <div class="chatbot-footer-text">
+      Powered by IRIS Invoice Management
+    </div>
+  </footer>
+
+</section>

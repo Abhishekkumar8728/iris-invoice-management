@@ -1,0 +1,108 @@
+<div class="vw-login-page">
+
+  <header class="vw-brand">
+    <div class="vw-logo">
+      <span>VW</span>
+    </div>
+    <span class="vw-brand-name">Volkswagen</span>
+  </header>
+
+  <main class="login-layout">
+    <section class="vehicle-section">
+      <div class="smoke-layer smoke-back"></div>
+      <div class="smoke-layer smoke-front"></div>
+
+  <div class="vehicle-content">
+    <img
+      *ngIf="!imageError"
+      class="vehicle-image"
+      src="/assets/images/vw-electric-car.png"
+      alt="Volkswagen electric concept car"
+      (error)="onImageError()"
+    />
+
+    <div *ngIf="imageError" class="vehicle-image-fallback">
+      Volkswagen I.D. Vizzion
+    </div>
+
+    <div class="vehicle-caption">
+      <h1>Volkswagen I.D. Vizzion</h1>
+      <p>A study of the premium electric mobility experience.</p>
+    </div>
+  </div>
+</section>
+
+<section class="login-section">
+  <div class="login-glass-panel">
+    <div class="login-tabs">
+      <span class="tab-active">Log in</span>
+   
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()">
+      <div class="login-field">
+        <input
+          id="identifier"
+          type="text"
+          formControlName="identifier"
+          placeholder="Employee ID or email"
+          autocomplete="username"
+          required
+        />
+      </div>
+
+      <div class="login-field password-field">
+        <input
+          id="password"
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+          placeholder="Password"
+          autocomplete="current-password"
+          required
+        />
+
+        <button
+          type="button"
+          class="password-toggle"
+          (click)="togglePasswordVisibility()"
+          [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'"
+        >
+          {{ hidePassword ? '◉' : '◎' }}
+        </button>
+      </div>
+
+      <div *ngIf="errorMessage" class="login-error" role="alert">
+        {{ errorMessage }}
+      </div>
+
+      <button
+        type="submit"
+        class="login-submit"
+        [disabled]="loading || retryAfterSeconds > 0 || loginForm.invalid"
+      >
+        {{
+          loading
+            ? 'LOGGING IN...'
+            : retryAfterSeconds > 0
+              ? 'TRY AGAIN IN ' + retryAfterSeconds + 'S'
+              : 'LOG IN'
+        }}
+      </button>
+      <div class="login-bottom-links">
+              <a routerLink="/forgot-password">Forgot password?</a>
+              <a routerLink="/register">Create account</a>
+            </div>
+          </form>
+
+    <div class="social-login">
+      <a href="#" aria-label="Facebook">f</a>
+      <a href="#" aria-label="Twitter">♥</a>
+      <a href="#" aria-label="Google">G+</a>
+    </div>
+  </div>
+</section>
+
+  </main>
+
+  <div class="decorative-star" aria-hidden="true">✦</div>
+</div>

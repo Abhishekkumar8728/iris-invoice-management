@@ -1,0 +1,291 @@
+services:
+
+  mongodb:
+    image: mongo:8
+
+    container_name: iris-mongodb
+
+    restart: unless-stopped
+
+    ports:
+      - "27017:27017"
+
+    volumes:
+      - iris-mongodb-data:/data/db
+
+    networks:
+      - iris-network
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongosh",
+          "--eval",
+          "db.adminCommand('ping')"
+        ]
+
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+
+    container_name: iris-auth-service
+
+    restart: unless-stopped
+
+    env_file:
+      - ./.env
+
+    environment:
+      PORT: 4001
+
+      MONGO_URI: mongodb://mongodb:27017/iris_auth
+
+      USER_SERVICE_URL: http://user-service:4002
+
+      NOTIFICATION_SERVICE_URL: http://notification-service:4004
+
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+      user-service:
+        condition: service_started
+
+      notification-service:
+        condition: service_started
+
+    ports:
+      - "4001:4001"
+
+    networks:
+      - iris-network
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:4001/health"
+        ]
+
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  user-service:
+    build:
+      context: ./services/user-service
+
+    container_name: iris-user-service
+
+    restart: unless-stopped
+
+    env_file:
+      - ./.env
+
+    environment:
+      PORT: 4002
+
+      MONGO_URI: mongodb://mongodb:27017/iris_users
+
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+    ports:
+      - "4002:4002"
+
+    networks:
+      - iris-network
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:4002/health"
+        ]
+
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  invoice-service:
+    build:
+      context: ./services/invoice-service
+
+    container_name: iris-invoice-service
+
+    restart: unless-stopped
+
+    env_file:
+      - ./.env
+
+    environment:
+      PORT: 4003
+
+      MONGO_URI: mongodb://mongodb:27017/iris_invoices
+
+      USER_SERVICE_URL: http://user-service:4002
+
+      NOTIFICATION_SERVICE_URL: http://notification-service:4004
+
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+      user-service:
+        condition: service_started
+
+      notification-service:
+        condition: service_started
+
+    ports:
+      - "4003:4003"
+
+    networks:
+      - iris-network
+
+    volumes:
+      - invoice-uploads:/app/uploads
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:4003/health"
+        ]
+
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  notification-service:
+    build:
+      context: ./services/notification-service
+
+    container_name: iris-notification-service
+
+    restart: unless-stopped
+
+    env_file:
+      - ./.env
+
+    environment:
+      PORT: 4004
+
+      MONGO_URI: mongodb://mongodb:27017/iris_notifications
+
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+    ports:
+      - "4004:4004"
+
+    networks:
+      - iris-network
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:4004/health"
+        ]
+
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+
+    container_name: iris-api-gateway
+
+    restart: unless-stopped
+
+    env_file:
+      - ./.env
+
+    environment:
+      PORT: 4000
+
+      AUTH_SERVICE_URL: http://auth-service:4001
+
+      USER_SERVICE_URL: http://user-service:4002
+
+      INVOICE_SERVICE_URL: http://invoice-service:4003
+
+      NOTIFICATION_SERVICE_URL: http://notification-service:4004
+
+    depends_on:
+      auth-service:
+        condition: service_healthy
+
+      user-service:
+        condition: service_healthy
+
+      invoice-service:
+        condition: service_healthy
+
+      notification-service:
+        condition: service_healthy
+
+    ports:
+      - "4000:4000"
+
+    networks:
+      - iris-network
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:4000/health"
+        ]
+
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+volumes:
+
+  iris-mongodb-data:
+
+  invoice-uploads:
+
+
+networks:
+
+  iris-network:
+    driver: bridge

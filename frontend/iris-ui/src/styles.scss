@@ -1,0 +1,1085 @@
+@use 'bootstrap/scss/bootstrap';
+@use 'bootstrap-icons/font/bootstrap-icons.css';
+
+
+
+
+:root {
+
+  
+
+  --iris-green-900: #020706;
+
+  --iris-green-800: #071513;
+
+  --iris-green-700: #0d2a27;
+
+  --iris-green-600: #1f7d75;
+
+
+  
+
+  --iris-teal-600: #72d2c4;
+
+  --iris-cyan-600: #6ee1cb;
+
+  --iris-blue-600: #4bb5c0;
+
+
+  
+
+  --iris-gradient:
+    linear-gradient(
+      115deg,
+      #020706 0%,
+      #071513 48%,
+      #020807 100%
+    );
+
+
+  --iris-gradient-reverse:
+    linear-gradient(
+      115deg,
+      #020807 0%,
+      #071513 48%,
+      #020706 100%
+    );
+
+
+  
+
+  --iris-gradient-soft:
+    linear-gradient(
+      135deg,
+      rgba(114, 210, 196, 0.12),
+      rgba(62, 110, 132, 0.12)
+    );
+
+
+  
+
+  --iris-background: #020807;
+
+
+  
+
+  --iris-card: #0c201d;
+
+
+  
+
+  --iris-border: rgba(114, 210, 196, 0.28);
+
+
+  
+
+  --iris-text: #edf7f3;
+
+  --iris-muted: #b9cbc6;
+
+
+  
+
+  --iris-danger: #ff7d73;
+
+  --iris-success: #73d9c7;
+
+  --iris-warning: #f9d77e;
+
+
+  
+
+  --iris-shadow:
+    0 24px 70px
+    rgba(0, 0, 0, 0.3),
+    0 0 35px rgba(72, 196, 176, 0.08);
+
+}
+
+
+
+
+html,
+body {
+
+  min-height: 100%;
+
+  margin: 0;
+
+  padding: 0;
+
+}
+
+
+body {
+
+  font-family:
+    Roboto,
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  background:
+
+    radial-gradient(
+      ellipse at 20% 10%,
+      rgba(90, 200, 188, 0.18),
+      transparent 28%
+    ),
+
+    radial-gradient(
+      ellipse at 80% 18%,
+      rgba(62, 108, 122, 0.16),
+      transparent 24%
+    ),
+
+    var(--iris-background);
+
+  color:
+    var(--iris-text);
+
+}
+
+
+* {
+
+  box-sizing: border-box;
+
+}
+
+.chatbot-launcher-tooltip,
+.chatbot-launcher-tooltip .mdc-tooltip__surface {
+  color: #fff !important;
+}
+
+
+button,
+input,
+select,
+textarea {
+
+  font-family: inherit;
+
+}
+
+
+
+
+.page-container {
+
+  width: 100%;
+
+  max-width: 1600px;
+
+  margin: 0 auto;
+
+}
+
+
+
+
+.card {
+
+  border:
+    1px solid var(--iris-border);
+
+  border-radius:
+    14px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(12, 35, 31, 0.9),
+      rgba(3, 15, 13, 0.96)
+    );
+
+  color:
+    var(--iris-text);
+
+  box-shadow:
+    var(--iris-shadow);
+
+}
+
+
+
+
+.table-responsive {
+
+  width: 100%;
+
+  overflow-x: auto;
+
+  -webkit-overflow-scrolling:
+    touch;
+
+}
+
+
+
+
+.mat-mdc-form-field {
+
+  width: 100%;
+
+}
+
+
+.mat-mdc-text-field-wrapper {
+
+  border-radius:
+    11px !important;
+
+}
+
+
+.mat-mdc-form-field-focus-overlay {
+
+  background:
+    transparent !important;
+
+}
+
+
+
+
+.mat-mdc-form-field.mat-focused
+.mdc-notched-outline__leading,
+
+.mat-mdc-form-field.mat-focused
+.mdc-notched-outline__notch,
+
+.mat-mdc-form-field.mat-focused
+.mdc-notched-outline__trailing {
+
+  border-color:
+    var(--iris-teal-600) !important;
+
+  border-width:
+    2px !important;
+
+}
+
+
+.mat-mdc-form-field:hover
+.mdc-notched-outline__leading,
+
+.mat-mdc-form-field:hover
+.mdc-notched-outline__notch,
+
+.mat-mdc-form-field:hover
+.mdc-notched-outline__trailing {
+
+  border-color:
+    var(--iris-green-600);
+
+}
+
+
+
+
+.mat-mdc-form-field.mat-focused
+.mat-mdc-floating-label {
+
+  color:
+    var(--iris-green-700) !important;
+
+}
+
+
+
+
+.mat-mdc-form-field
+.mat-mdc-form-field-icon-prefix,
+
+.mat-mdc-form-field
+.mat-mdc-form-field-icon-suffix {
+
+  color:
+    var(--iris-green-700);
+
+}
+
+
+
+
+.mat-mdc-unelevated-button {
+
+  border-radius:
+    10px !important;
+
+}
+
+
+.mat-mdc-outlined-button {
+
+  border-radius:
+    10px !important;
+
+}
+
+
+.mat-mdc-raised-button {
+
+  border-radius:
+    10px !important;
+
+}
+
+
+
+
+.mat-mdc-unelevated-button:not(:disabled) {
+
+  background:
+    var(--iris-gradient) !important;
+
+  color:
+    #ffffff !important;
+
+}
+
+
+
+
+.mat-mdc-icon-button {
+
+  border-radius:
+    10px;
+
+}
+
+
+
+
+.mat-mdc-checkbox {
+
+  --mdc-checkbox-selected-checkmark-color:
+    #ffffff;
+
+}
+
+
+
+
+.mat-mdc-progress-spinner {
+
+  --mdc-circular-progress-active-indicator-color:
+    var(--iris-teal-600);
+
+}
+
+
+
+
+.btn-primary {
+
+  background:
+    var(--iris-gradient) !important;
+
+  border-color:
+    transparent !important;
+
+  color:
+    #ffffff !important;
+
+}
+
+
+.btn-primary:hover {
+
+  background:
+    var(--iris-gradient-reverse) !important;
+
+}
+
+
+
+
+.iris-gradient-text {
+
+  background:
+    var(--iris-gradient);
+
+  -webkit-background-clip:
+    text;
+
+  background-clip:
+    text;
+
+  color:
+    transparent;
+
+}
+
+
+
+
+.page-title {
+
+  color:
+    var(--iris-green-800);
+
+  font-weight:
+    800;
+
+}
+
+
+.page-subtitle {
+
+  color:
+    var(--iris-muted);
+
+}
+
+
+
+
+.sidebar {
+
+  background:
+    var(--iris-gradient) !important;
+
+}
+
+
+
+
+.sidebar a.active {
+
+  background:
+    rgba(255, 255, 255, 0.18) !important;
+
+  color:
+    #ffffff !important;
+
+}
+
+
+
+
+.iris-primary-button {
+
+  background:
+    var(--iris-gradient) !important;
+
+  color:
+    #ffffff !important;
+
+  border:
+    none !important;
+
+  border-radius:
+    10px !important;
+
+}
+
+
+
+
+.status-success {
+
+  background:
+    #dcfce7;
+
+  color:
+    #166534;
+
+}
+
+
+.status-warning {
+
+  background:
+    #fef3c7;
+
+  color:
+    #92400e;
+
+}
+
+
+.status-danger {
+
+  background:
+    #fee2e2;
+
+  color:
+    #991b1b;
+
+}
+
+
+.status-default {
+
+  background:
+    #e2e8f0;
+
+  color:
+    #475569;
+
+}
+
+
+
+
+@media (max-width: 576px) {
+
+  .card {
+
+    border-radius:
+      10px;
+
+  }
+
+
+  .page-container {
+
+    width: 100%;
+
+  }
+
+}
+
+
+
+:root {
+  color-scheme: light;
+
+  --iris-background: #f5f8f7;
+  --iris-card: #ffffff;
+  --iris-border: #dbe7e2;
+  --iris-text: #14231f;
+  --iris-muted: #64746e;
+  --iris-shadow: 0 12px 35px rgba(6, 78, 59, 0.08);
+
+  --iris-surface-secondary: #edf4f1;
+  --iris-input-background: #ffffff;
+  --iris-hover: #e7f3ee;
+}
+
+
+html.dark-theme {
+  color-scheme: dark;
+
+  --iris-background: #111827;
+  --iris-card: #1f2937;
+  --iris-border: #374151;
+  --iris-text: #f3f4f6;
+  --iris-muted: #b0becb;
+  --iris-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+
+  --iris-surface-secondary: #273449;
+  --iris-input-background: #1f2937;
+  --iris-hover: #334155;
+}
+
+
+html.dark-theme body {
+  background:
+    radial-gradient(
+      circle at 5% 0%,
+      rgba(5, 150, 105, 0.10),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 95% 10%,
+      rgba(8, 145, 178, 0.08),
+      transparent 25%
+    ),
+    var(--iris-background);
+
+  color: var(--iris-text);
+}
+
+
+html.dark-theme .card,
+html.dark-theme .summary-card,
+html.dark-theme .invoice-count-card,
+html.dark-theme .invoice-info-card,
+html.dark-theme .modal-content,
+html.dark-theme .dropdown-menu {
+  color: var(--iris-text);
+  background: var(--iris-card);
+  border-color: var(--iris-border);
+  box-shadow: var(--iris-shadow);
+}
+
+
+html.dark-theme h1,
+html.dark-theme h2,
+html.dark-theme h3,
+html.dark-theme h4,
+html.dark-theme h5,
+html.dark-theme h6,
+html.dark-theme .page-title,
+html.dark-theme .summary-title,
+html.dark-theme .summary-item strong {
+  color: var(--iris-text);
+}
+
+html.dark-theme p,
+html.dark-theme label,
+html.dark-theme .page-subtitle,
+html.dark-theme .summary-item span,
+html.dark-theme .summary-values span {
+  color: var(--iris-muted);
+}
+
+
+html.dark-theme .table,
+html.dark-theme .table > :not(caption) > * > * {
+  color: var(--iris-text);
+  background-color: var(--iris-card);
+  border-color: var(--iris-border);
+}
+
+html.dark-theme .table thead th {
+  background-color: var(--iris-surface-secondary);
+}
+
+html.dark-theme .table-hover tbody tr:hover > * {
+  background-color: var(--iris-hover);
+}
+
+
+html.dark-theme input:not([type="checkbox"]):not([type="radio"]),
+html.dark-theme select,
+html.dark-theme textarea,
+html.dark-theme .form-control,
+html.dark-theme .form-select {
+  color: var(--iris-text);
+  background-color: var(--iris-input-background);
+  border-color: var(--iris-border);
+}
+
+html.dark-theme input::placeholder,
+html.dark-theme textarea::placeholder,
+html.dark-theme .form-control::placeholder {
+  color: var(--iris-muted);
+}
+
+
+html.dark-theme .mat-mdc-text-field-wrapper {
+  background-color: var(--iris-input-background);
+}
+
+html.dark-theme .mat-mdc-input-element,
+html.dark-theme .mat-mdc-select-value,
+html.dark-theme .mat-mdc-select-arrow,
+html.dark-theme .mat-mdc-form-field,
+html.dark-theme .mat-mdc-floating-label {
+  color: var(--iris-text);
+}
+
+html.dark-theme .mdc-notched-outline__leading,
+html.dark-theme .mdc-notched-outline__notch,
+html.dark-theme .mdc-notched-outline__trailing {
+  border-color: var(--iris-border);
+}
+
+html.dark-theme .mat-mdc-select-panel,
+html.dark-theme .mat-mdc-autocomplete-panel,
+html.dark-theme .mat-mdc-menu-panel,
+html.dark-theme .mat-mdc-dialog-surface,
+html.dark-theme .mat-mdc-option {
+  color: var(--iris-text);
+  background-color: var(--iris-card);
+}
+
+html.dark-theme .mat-mdc-option:hover,
+html.dark-theme .mat-mdc-option.mdc-list-item--selected {
+  background-color: var(--iris-hover);
+}
+
+
+html.dark-theme .list-group-item,
+html.dark-theme .dropdown-item,
+html.dark-theme .page-link {
+  color: var(--iris-text);
+  background-color: var(--iris-card);
+  border-color: var(--iris-border);
+}
+
+html.dark-theme .dropdown-item:hover {
+  background-color: var(--iris-hover);
+}
+
+
+html.dark-theme .chatbot-container {
+  background-color: var(--iris-card);
+  border-color: var(--iris-border);
+}
+
+html.dark-theme .chatbot-messages {
+  background: var(--iris-background);
+}
+
+html.dark-theme .bot-message,
+html.dark-theme .summary-item,
+html.dark-theme .chatbot-input-area,
+html.dark-theme .suggestions {
+  color: var(--iris-text);
+  background: var(--iris-card);
+  border-color: var(--iris-border);
+}
+
+html.dark-theme .info-card-label,
+html.dark-theme .info-card-caption,
+html.dark-theme .invoice-card-caption,
+html.dark-theme .summary-item span {
+  color: var(--iris-muted);
+}
+
+
+.iris-theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 3000;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 40px;
+  padding: 8px 14px;
+
+  color: var(--iris-text);
+  background: var(--iris-card);
+  border: 1px solid var(--iris-border);
+  border-radius: 22px;
+
+  box-shadow: var(--iris-shadow);
+  cursor: pointer;
+
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.iris-theme-toggle:hover {
+  background: var(--iris-hover);
+  transform: translateY(-1px);
+}
+
+
+.invoice-status-panel.mat-mdc-select-panel {
+  max-height: min(280px, 50vh) !important;
+  border: 1px solid rgba(18, 232, 224, 0.35);
+  border-radius: 8px;
+  background: #061b1b !important;
+  color: #e9fcff !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.invoice-status-panel .mat-mdc-option {
+  min-height: 40px;
+  color: #e9fcff !important;
+  background: #061b1b !important;
+}
+
+.invoice-status-panel .mat-mdc-option .mdc-list-item__primary-text {
+  color: #e9fcff !important;
+}
+
+.invoice-status-panel .mat-mdc-option:hover,
+.invoice-status-panel .mat-mdc-option.mdc-list-item--selected {
+  background: rgba(18, 232, 224, 0.16) !important;
+}
+
+
+.register-role-panel.mat-mdc-select-panel {
+  max-height: min(320px, 70vh) !important;
+  padding: 4px 0;
+  border: 1px solid rgba(114, 210, 196, 0.42);
+  border-radius: 10px;
+  background: #0c201d !important;
+  color: #edf7f3 !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+}
+
+.register-role-panel .mat-mdc-option {
+  min-height: 40px;
+  color: #edf7f3 !important;
+  background: #0c201d !important;
+}
+
+.register-role-panel .mat-mdc-option .mdc-list-item__primary-text {
+  color: #edf7f3 !important;
+}
+
+.register-role-panel .mat-mdc-option:hover,
+.register-role-panel .mat-mdc-option.mdc-list-item--selected {
+  background: #123a34 !important;
+}
+
+.register-role-panel .mat-mdc-option .mat-pseudo-checkbox-checked {
+  background: #43c9ad !important;
+}
+
+
+.cdk-overlay-container {
+  z-index: 5000;
+}
+
+.cdk-overlay-pane.iris-calendar-panel {
+  z-index: 5001 !important;
+}
+
+.iris-calendar-panel,
+.iris-calendar-panel .mat-datepicker-content,
+.iris-calendar-panel mat-datepicker-content,
+.iris-calendar-panel .mat-calendar {
+  background-color: #061b1b !important;
+}
+
+.iris-calendar-panel .mat-datepicker-content,
+.iris-calendar-panel mat-datepicker-content {
+  border: 1px solid rgba(18, 232, 224, 0.35);
+  border-radius: 12px;
+  color: #e8f7f6 !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.iris-calendar-panel {
+  --mat-datepicker-calendar-container-background-color: #061b1b;
+  --mat-datepicker-calendar-container-text-color: #e8f7f6;
+  color: #e8f7f6 !important;
+}
+
+.iris-calendar-panel .mat-calendar-header,
+.iris-calendar-panel .mat-calendar-controls {
+  color: #e8f7f6 !important;
+}
+
+.iris-calendar-panel .mat-calendar-period-button,
+.iris-calendar-panel .mat-calendar-previous-button,
+.iris-calendar-panel .mat-calendar-next-button {
+  color: #7ffbf3 !important;
+}
+
+.iris-calendar-panel .mat-calendar-table-header,
+.iris-calendar-panel .mat-calendar-body-label {
+  color: #9db8bd !important;
+}
+
+.iris-calendar-panel .mat-calendar-body-cell-content {
+  color: #e8f7f6 !important;
+}
+
+.iris-calendar-panel .mat-calendar-body-cell:not(.mat-calendar-body-disabled):hover
+.mat-calendar-body-cell-content {
+  background: rgba(18, 232, 224, 0.18);
+}
+
+.iris-calendar-panel .mat-calendar-body-today:not(.mat-calendar-body-selected)
+.mat-calendar-body-cell-content {
+  border-color: #12e8e0;
+}
+
+.iris-calendar-panel .mat-calendar-body-selected {
+  color: #021312 !important;
+  background: #12e8e0 !important;
+}
+
+.iris-calendar-panel .mat-calendar-body-disabled
+.mat-calendar-body-cell-content {
+  color: #587274;
+}
+
+.iris-theme-toggle:focus-visible {
+  outline: 2px solid var(--iris-teal-600);
+  outline-offset: 3px;
+}
+
+.theme-icon {
+  font-size: 19px;
+  line-height: 1;
+}
+
+
+@media (max-width: 576px) {
+  .iris-theme-toggle {
+    top: 10px;
+    right: 10px;
+    min-height: 36px;
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+}
+
+:root {
+  color-scheme: light;
+
+  --iris-background: #f5f8f7;
+  --iris-card: #ffffff;
+  --iris-border: #dbe7e2;
+  --iris-text: #14231f;
+  --iris-muted: #64746e;
+  --iris-input-background: #ffffff;
+  --iris-hover: #e7f3ee;
+}
+
+
+html.dark-theme {
+  color-scheme: dark;
+
+  --iris-background: #111827;
+  --iris-card: #1f2937;
+  --iris-border: #374151;
+  --iris-text: #f3f4f6;
+  --iris-muted: #b0becb;
+  --iris-input-background: #1f2937;
+  --iris-hover: #334155;
+
+  background: var(--iris-background);
+  color: var(--iris-text);
+}
+
+html.dark-theme body {
+  background: var(--iris-background) !important;
+  color: var(--iris-text) !important;
+}
+
+
+html.dark-theme .card,
+html.dark-theme .card-body,
+html.dark-theme .dashboard-card,
+html.dark-theme .stat-card,
+html.dark-theme .summary-card,
+html.dark-theme .invoice-card,
+html.dark-theme .modal-content,
+html.dark-theme .dropdown-menu,
+html.dark-theme .list-group-item,
+html.dark-theme .accordion-item {
+  background-color: var(--iris-card) !important;
+  color: var(--iris-text) !important;
+  border-color: var(--iris-border) !important;
+}
+
+
+html.dark-theme .sidebar {
+  background: linear-gradient(
+    180deg,
+    #063d32 0%,
+    #075e50 50%,
+    #102e36 100%
+  ) !important;
+}
+
+
+html.dark-theme .navbar,
+html.dark-theme .topbar,
+html.dark-theme .app-header {
+  background: var(--iris-card) !important;
+  color: var(--iris-text) !important;
+  border-color: var(--iris-border) !important;
+}
+
+
+html.dark-theme h1,
+html.dark-theme h2,
+html.dark-theme h3,
+html.dark-theme h4,
+html.dark-theme h5,
+html.dark-theme h6,
+html.dark-theme p,
+html.dark-theme label,
+html.dark-theme .form-label,
+html.dark-theme .page-subtitle,
+html.dark-theme .text-dark {
+  color: var(--iris-text) !important;
+}
+
+html.dark-theme .text-muted,
+html.dark-theme small {
+  color: var(--iris-muted) !important;
+}
+
+
+html.dark-theme .table {
+  --bs-table-bg: var(--iris-card);
+  --bs-table-color: var(--iris-text);
+  --bs-table-border-color: var(--iris-border);
+  --bs-table-striped-bg: #273449;
+  --bs-table-striped-color: var(--iris-text);
+  --bs-table-hover-bg: var(--iris-hover);
+  --bs-table-hover-color: var(--iris-text);
+
+  background-color: var(--iris-card) !important;
+  color: var(--iris-text) !important;
+}
+
+html.dark-theme .table th,
+html.dark-theme .table td {
+  background-color: transparent;
+  color: var(--iris-text) !important;
+  border-color: var(--iris-border) !important;
+}
+
+
+html.dark-theme input,
+html.dark-theme textarea,
+html.dark-theme select,
+html.dark-theme .form-control,
+html.dark-theme .form-select {
+  background-color: var(--iris-input-background) !important;
+  color: var(--iris-text) !important;
+  border-color: var(--iris-border) !important;
+}
+
+html.dark-theme input::placeholder,
+html.dark-theme textarea::placeholder {
+  color: var(--iris-muted) !important;
+}
+
+
+html.dark-theme .mat-mdc-form-field,
+html.dark-theme .mat-mdc-text-field-wrapper,
+html.dark-theme .mat-mdc-select-panel,
+html.dark-theme .mat-mdc-option,
+html.dark-theme .mat-expansion-panel,
+html.dark-theme .mat-mdc-dialog-surface,
+html.dark-theme .mat-mdc-menu-panel {
+  background-color: var(--iris-card) !important;
+  color: var(--iris-text) !important;
+}
+
+html.dark-theme .mat-mdc-input-element,
+html.dark-theme .mat-mdc-select-value,
+html.dark-theme .mat-mdc-floating-label,
+html.dark-theme .mat-mdc-option .mdc-list-item__primary-text {
+  color: var(--iris-text) !important;
+}
+
+
+html.dark-theme .nav-link:hover,
+html.dark-theme .dropdown-item:hover,
+html.dark-theme .list-group-item:hover {
+  background-color: var(--iris-hover) !important;
+  color: var(--iris-text) !important;
+}
+
+
+html.dark-theme .chatbot-container,
+html.dark-theme .chatbot-window,
+html.dark-theme .chat-window,
+html.dark-theme .chat-messages {
+  background-color: var(--iris-card) !important;
+  color: var(--iris-text) !important;
+  border-color: var(--iris-border) !important;
+}
+
+html.dark-theme .bot-message,
+html.dark-theme .chatbot-message {
+  background-color: var(--iris-surface-secondary, #273449) !important;
+  color: var(--iris-text) !important;
+}

@@ -1,0 +1,844 @@
+@if (isLoading) {
+  <div class="invoice-load-state" role="status">
+    <mat-spinner diameter="36"></mat-spinner>
+    <span>Loading invoice details...</span>
+  </div>
+} @else if (invoice) {
+<div class="invoice-details-page">
+  <div class="page-header">
+    <div class="page-toolbar">
+      <button
+        type="button"
+        mat-stroked-button
+        class="back-button"
+        (click)="backToInvoices()">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Invoices
+      </button>
+
+      <button
+        type="button"
+        mat-flat-button
+        class="download-pdf-button"
+        [disabled]="isGeneratingPdf"
+        (click)="downloadInvoicePdf()">
+        @if (isGeneratingPdf) {
+          <mat-spinner diameter="18"></mat-spinner>
+        } @else {
+          <mat-icon>download</mat-icon>
+        }
+        {{ isGeneratingPdf ? 'Preparing PDF...' : 'Download PDF' }}
+      </button>
+    </div>
+
+    <div class="title-section">
+
+      <div class="title-row">
+
+        <div class="invoice-title-icon">
+          <mat-icon>receipt_long</mat-icon>
+        </div>
+
+        <div class="title-content">
+
+          <div class="title-with-status">
+            <h1>
+              {{ invoice.invoiceNumber }}
+            </h1>
+
+            <span
+              class="status-badge"
+              [class]="getStatusClass(invoice.status)"
+            >
+              <span class="status-dot"></span>
+              {{ formatStatus(invoice.status) }}
+            </span>
+          </div>
+          <p>
+            Invoice details and process tracking
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="process-card" aria-label="Invoice process">
+    <div class="process-heading">
+      <div class="process-icon">
+        <mat-icon>route</mat-icon>
+      </div>
+      <div>
+        <h2>Invoice Process</h2>
+        <p>Current stage: {{ formatStatus(invoice.status) }}</p>
+      </div>
+    </div>
+
+    @if (processSteps.length > 0) {
+      <div class="process-track">
+        @for (step of processSteps; track $index) {
+          <div class="process-step" [class.process-current]="step.current">
+            <span class="process-step-marker">
+              <mat-icon>{{ step.current ? 'more_horiz' : 'check' }}</mat-icon>
+            </span>
+            <span class="process-step-copy">
+              <strong>{{ step.label }}</strong>
+              <small>
+                @if (step.current) {
+                  Current stage
+                } @else {
+                  {{ step.date | date:'dd MMM, hh:mm a' }}
+                }
+              </small>
+            </span>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  @if (successMessage) {
+    <div class="message-card success-message">
+
+      <div class="message-icon">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+
+      <div class="message-content">
+        <strong>Success</strong>
+        <span>{{ successMessage }}</span>
+      </div>
+
+    </div>
+
+  }
+
+
+  
+  @if (errorMessage) {
+    <div class="message-card error-message">
+
+      <div class="message-icon">
+        <mat-icon>error_outline</mat-icon>
+      </div>
+
+      <div class="message-content">
+        <strong>Something went wrong</strong>
+        <span>{{ errorMessage }}</span>
+      </div>
+
+    </div>
+
+  }
+
+
+  
+  <section class="details-card workflow-card">
+
+    <div class="section-header">
+
+      <div class="section-heading">
+
+        <div class="section-icon workflow-icon">
+          <mat-icon>account_tree</mat-icon>
+        </div>
+
+        <div>
+
+          <h2>
+            Workflow Actions
+          </h2>
+
+          <p>
+            Available actions for your role
+          </p>
+
+        </div>
+
+      </div>
+
+      @if (actionLoading) {
+
+        <div class="action-loading">
+
+          <mat-spinner diameter="24"></mat-spinner>
+
+          <span>Processing...</span>
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <div class="section-body">
+
+      <div class="action-buttons">
+
+        @if (canSubmit) {
+
+          <button
+            type="button"
+            mat-flat-button
+            class="workflow-button workflow-primary"
+            (click)="submit()"
+            [disabled]="actionLoading"
+          >
+            <mat-icon>send</mat-icon>
+            Submit
+          </button>
+
+        }
+
+
+        @if (canResubmit) {
+
+          <button
+            type="button"
+            mat-flat-button
+            class="workflow-button workflow-primary"
+            (click)="resubmit()"
+            [disabled]="actionLoading"
+          >
+            <mat-icon>refresh</mat-icon>
+            Resubmit
+          </button>
+
+        }
+
+
+        @if (canReview) {
+
+          <button
+            type="button"
+            mat-flat-button
+            class="workflow-button workflow-info"
+            (click)="review()"
+            [disabled]="actionLoading"
+          >
+            <mat-icon>search</mat-icon>
+            Start Review
+          </button>
+
+        }
+
+
+        @if (canApprove) {
+
+          <button
+            type="button"
+            mat-flat-button
+            class="workflow-button workflow-success"
+            (click)="approve()"
+            [disabled]="actionLoading"
+          >
+            <mat-icon>check_circle</mat-icon>
+            Approve
+          </button>
+
+        }
+
+
+        @if (canReject) {
+
+          <button
+            type="button"
+            mat-stroked-button
+            class="workflow-button workflow-danger"
+            (click)="showRejectBox = !showRejectBox"
+            [disabled]="actionLoading"
+          >
+            <mat-icon>cancel</mat-icon>
+            Reject
+          </button>
+
+        }
+
+
+        @if (canProcess) {
+
+          <button
+            type="button"
+            mat-flat-button
+            class="workflow-button workflow-dark"
+            (click)="process()"
+            [disabled]="actionLoading"
+          >
+            <mat-icon>settings</mat-icon>
+            Process
+          </button>
+
+        }
+
+
+        @if (canPay) {
+
+          <button
+            type="button"
+            mat-flat-button
+            class="workflow-button workflow-success"
+            (click)="pay()"
+            [disabled]="actionLoading"
+          >
+            <mat-icon>payments</mat-icon>
+            Mark Paid
+          </button>
+
+        }
+
+
+        @if (canCancel) {
+
+          <button
+            type="button"
+            mat-stroked-button
+            class="workflow-button workflow-secondary"
+            (click)="cancel()"
+            [disabled]="actionLoading"
+          >
+            <mat-icon>block</mat-icon>
+            Cancel
+          </button>
+
+        }
+
+
+        @if (canApprove) {
+
+          <button
+            type="button"
+            mat-stroked-button
+            class="workflow-button workflow-approval"
+            (click)="openApproval()"
+            [disabled]="actionLoading"
+          >
+            <mat-icon>task_alt</mat-icon>
+            Open Approval
+          </button>
+
+        }
+
+      </div>
+
+
+      
+      @if (showRejectBox) {
+
+        <div class="reject-box">
+
+          <div class="reject-header">
+
+            <div class="reject-icon">
+              <mat-icon>warning</mat-icon>
+            </div>
+
+            <div>
+
+              <strong>
+                Reject Invoice
+              </strong>
+
+              <span>
+                Please provide a reason for rejection.
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <mat-form-field
+            appearance="outline"
+            class="rejection-field"
+          >
+
+            <mat-label>
+              Rejection Reason
+            </mat-label>
+
+            <mat-icon matPrefix>
+              comment
+            </mat-icon>
+
+            <textarea
+              matInput
+              rows="4"
+              [(ngModel)]="rejectionReason"
+              placeholder="Enter reason for rejection"
+            ></textarea>
+
+          </mat-form-field>
+
+
+          <div class="reject-actions">
+
+            <button
+              type="button"
+              mat-stroked-button
+              (click)="showRejectBox = false"
+              [disabled]="actionLoading"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              mat-flat-button
+              class="reject-confirm-button"
+              (click)="reject()"
+              [disabled]="actionLoading"
+            >
+              <mat-icon>cancel</mat-icon>
+              Confirm Rejection
+            </button>
+
+          </div>
+
+        </div>
+
+      }
+
+    </div>
+
+  </section>
+
+
+  
+  @if (
+    invoice.status === 'REJECTED' &&
+    invoice.rejectionReason
+  ) {
+
+    <div class="rejection-notice">
+
+      <div class="rejection-icon">
+        <mat-icon>warning</mat-icon>
+      </div>
+
+      <div class="rejection-content">
+
+        <strong>
+          Invoice Rejected
+        </strong>
+
+        <p>
+          {{ invoice.rejectionReason }}
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  
+  <div class="information-grid">
+
+
+    
+    <section class="details-card">
+
+      <div class="section-header">
+
+        <div class="section-heading">
+
+          <div class="section-icon">
+            <mat-icon>business</mat-icon>
+          </div>
+
+          <div>
+
+            <h2>
+              Vendor Information
+            </h2>
+
+            <p>
+              Vendor details associated with this invoice
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="section-body">
+
+        <div class="detail-grid">
+
+          <div class="detail-item">
+
+            <span>Vendor Code</span>
+
+            <strong>
+              {{ invoice.vendor?.vendorCode || '-' }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>Vendor Name</span>
+
+            <strong>
+              {{ invoice.vendor?.name || '-' }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>GSTIN</span>
+
+            <strong>
+              {{ invoice.vendor?.gstin || '-' }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>Email</span>
+
+            <strong>
+              {{ invoice.vendor?.email || '-' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    
+    <section class="details-card">
+
+      <div class="section-header">
+
+        <div class="section-heading">
+
+          <div class="section-icon invoice-icon">
+            <mat-icon>description</mat-icon>
+          </div>
+
+          <div>
+
+            <h2>
+              Invoice Information
+            </h2>
+
+            <p>
+              Basic invoice and purchase order details
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="section-body">
+
+        <div class="detail-grid">
+
+          <div class="detail-item">
+
+            <span>Invoice Number</span>
+
+            <strong>
+              {{ invoice.invoiceNumber }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>Invoice Date</span>
+
+            <strong>
+              {{ invoice.invoiceDate | date:'dd MMM yyyy' }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>Due Date</span>
+
+            <strong>
+              {{ invoice.dueDate | date:'dd MMM yyyy' }}
+            </strong>
+
+          </div>
+
+
+          <div class="detail-item">
+
+            <span>PO Number</span>
+
+            <strong>
+              {{ invoice.purchaseOrderNumber || '-' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  
+  <section class="details-card invoice-items-card">
+
+    <div class="section-header">
+
+      <div class="section-heading">
+
+        <div class="section-icon">
+          <mat-icon>list_alt</mat-icon>
+        </div>
+
+        <div>
+
+          <h2>
+            Invoice Items
+          </h2>
+
+          <p>
+            Products and services included in this invoice
+          </p>
+
+        </div>
+
+      </div>
+
+      <span class="item-count">
+        {{ invoiceItems.length }} items
+      </span>
+
+    </div>
+
+
+    <div class="table-container">
+
+      <table class="invoice-items-table">
+
+        <thead>
+
+          <tr>
+
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Tax %</th>
+            <th>Taxable</th>
+            <th>Tax</th>
+            <th>Total</th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody>
+
+          @for (
+            item of invoiceItems;
+            track $index
+          ) {
+
+            <tr>
+
+              <td>
+                <span class="item-description">
+                  {{ item.description }}
+                </span>
+              </td>
+
+              <td>
+                {{ item.quantity }}
+              </td>
+
+              <td>
+                {{ formatCurrency(item.unitPrice) }}
+              </td>
+
+              <td>
+                <span class="tax-value">
+                  {{ item.taxRate }}%
+                </span>
+              </td>
+
+              <td>
+                {{ formatCurrency(item.taxableAmount) }}
+              </td>
+
+              <td>
+                {{ formatCurrency(item.taxAmount) }}
+              </td>
+
+              <td>
+                <strong class="item-total">
+                  {{ formatCurrency(item.totalAmount) }}
+                </strong>
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+
+  
+  <div class="totals-wrapper">
+
+    <section class="totals-card">
+
+      <div class="totals-header">
+
+        <div class="totals-icon">
+          <mat-icon>currency_rupee</mat-icon>
+        </div>
+
+        <div>
+
+          <h2>
+            Invoice Summary
+          </h2>
+
+          <span>
+            Tax and payable amount
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="totals-body">
+
+        <div class="total-row">
+
+          <span>
+            Taxable Amount
+          </span>
+
+          <strong>
+            {{ formatCurrency(invoice.amounts?.taxableAmount) }}
+          </strong>
+
+        </div>
+
+
+        <div class="total-row">
+
+          <span>
+            CGST
+          </span>
+
+          <strong>
+            {{ formatCurrency(invoice.amounts?.cgst) }}
+          </strong>
+
+        </div>
+
+
+        <div class="total-row">
+
+          <span>
+            SGST
+          </span>
+
+          <strong>
+            {{ formatCurrency(invoice.amounts?.sgst) }}
+          </strong>
+
+        </div>
+
+
+        <div class="total-row">
+
+          <span>
+            IGST
+          </span>
+
+          <strong>
+            {{ formatCurrency(invoice.amounts?.igst) }}
+          </strong>
+
+        </div>
+
+
+        <div class="total-row">
+
+          <span>
+            Total Tax
+          </span>
+
+          <strong>
+            {{ formatCurrency(invoice.amounts?.totalTax) }}
+          </strong>
+
+        </div>
+
+
+        <div class="total-divider"></div>
+
+
+        <div class="grand-total">
+
+          <span>
+            Grand Total
+          </span>
+
+          <strong>
+            {{ formatCurrency(invoice.amounts?.totalAmount) }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+</div>
+} @else {
+  <div class="invoice-load-error" role="alert">
+    <mat-icon>error_outline</mat-icon>
+    <strong>Invoice details are unavailable</strong>
+    <span>{{ errorMessage || 'The requested invoice could not be loaded.' }}</span>
+    <button
+      type="button"
+      mat-stroked-button
+      class="back-button"
+      (click)="backToInvoices()">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Invoices
+    </button>
+  </div>
+}

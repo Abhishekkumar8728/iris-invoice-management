@@ -1,0 +1,290 @@
+openapi: 3.0.3
+info:
+  title: IRIS Invoice API
+  version: 1.0.0
+  description: Gateway API for authentication, users, invoices, workflow, and attachments.
+servers:
+  - url: http://localhost:4000
+    description: Local gateway
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/auth/login:
+    post:
+      security: []
+      summary: Login with email or employee ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/auth/register:
+    post:
+      security: []
+      summary: Register an account with a selected role
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/Success'
+  /api/v1/auth/refresh:
+    post:
+      security: []
+      summary: Rotate a refresh token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refreshToken]
+              properties:
+                refreshToken: {type: string}
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/auth/forgot-password:
+    post:
+      security: []
+      summary: Request a password-reset OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: {type: string, format: email}
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+  /api/v1/auth/reset-password:
+    post:
+      security: []
+      summary: Reset a password with an OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, otp, newPassword]
+              properties:
+                email: {type: string, format: email}
+                otp: {type: string, pattern: '^[0-9]{6}$'}
+                newPassword: {type: string, format: password}
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+  /api/v1/auth/me:
+    get:
+      summary: Return JWT identity
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/users/me:
+    get:
+      summary: Return the synchronized user profile
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+  /api/v1/vendors:
+    get:
+      summary: List vendors with invoice totals
+      parameters:
+        - {name: page, in: query, schema: {type: integer, minimum: 1}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100}}
+        - {name: search, in: query, schema: {type: string}}
+        - {name: status, in: query, schema: {type: string, enum: [active, inactive, all]}}
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+    post:
+      summary: Add a vendor (ADMIN or FINANCE)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [vendorCode, name]
+              properties:
+                vendorCode: {type: string}
+                name: {type: string}
+                gstin: {type: string}
+                email: {type: string, format: email}
+                mobile: {type: string}
+                address: {type: string}
+      responses:
+        '201':
+          $ref: '#/components/responses/Success'
+  /api/v1/vendors/{vendorCode}:
+    parameters:
+      - {name: vendorCode, in: path, required: true, schema: {type: string}}
+    get:
+      summary: Get a vendor and its invoice totals
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+    patch:
+      summary: Update vendor details (ADMIN or FINANCE)
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+    delete:
+      summary: Archive a vendor (ADMIN or FINANCE)
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+  /api/v1/reports/invoices:
+    get:
+      summary: List visible invoices and filtered report totals
+      parameters:
+        - {name: page, in: query, schema: {type: integer, minimum: 1}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100}}
+        - {name: status, in: query, schema: {type: string, enum: [DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, PROCESSED, PAID, CANCELLED]}}
+        - {name: dateFrom, in: query, schema: {type: string, format: date-time}}
+        - {name: dateTo, in: query, schema: {type: string, format: date-time}}
+        - {name: minAmount, in: query, schema: {type: number, minimum: 0}}
+        - {name: maxAmount, in: query, schema: {type: number, minimum: 0}}
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+  /api/v1/invoices:
+    get:
+      summary: List invoices with validated filters
+      parameters:
+        - {name: page, in: query, schema: {type: integer, minimum: 1}}
+        - {name: limit, in: query, schema: {type: integer, minimum: 1, maximum: 100}}
+        - {name: status, in: query, schema: {type: string, enum: [DRAFT, SUBMITTED, UNDER_REVIEW, APPROVED, REJECTED, PROCESSED, PAID, CANCELLED]}}
+        - {name: dateFrom, in: query, schema: {type: string, format: date-time}}
+        - {name: dateTo, in: query, schema: {type: string, format: date-time}}
+        - {name: minAmount, in: query, schema: {type: number, minimum: 0}}
+        - {name: maxAmount, in: query, schema: {type: number, minimum: 0}}
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+    post:
+      summary: Create a draft invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/Success'
+  /api/v1/invoices/{id}:
+    parameters:
+      - {$ref: '#/components/parameters/InvoiceId'}
+    get:
+      summary: Get an invoice
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+    patch:
+      summary: Update a draft or rejected invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+  /api/v1/invoices/{id}/attachments:
+    post:
+      summary: Upload an invoice attachment
+      parameters:
+        - {$ref: '#/components/parameters/InvoiceId'}
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file: {type: string, format: binary}
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+  /api/v1/invoices/{id}/attachments/{attachmentId}:
+    get:
+      summary: Download an authorized attachment
+      parameters:
+        - {$ref: '#/components/parameters/InvoiceId'}
+        - {name: attachmentId, in: path, required: true, schema: {type: string}}
+      responses:
+        '200':
+          description: File content
+          content:
+            application/octet-stream: {}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    InvoiceId:
+      name: id
+      in: path
+      required: true
+      schema: {type: string}
+  schemas:
+    LoginRequest:
+      type: object
+      required: [password]
+      properties:
+        identifier: {type: string}
+        email: {type: string, format: email}
+        password: {type: string, format: password}
+    RegisterRequest:
+      type: object
+      required: [employeeId, name, email, password]
+      properties:
+        employeeId: {type: string}
+        name: {type: string}
+        email: {type: string, format: email}
+        password: {type: string, format: password}
+        mobile: {type: string}
+        department: {type: string}
+        role:
+          type: string
+          enum: [ADMIN, FINANCE, APPROVER, USER]
+          default: USER
+    InvoiceRequest:
+      type: object
+      required: [vendor, invoiceDate, dueDate, items]
+      properties:
+        vendor: {type: object}
+        invoiceDate: {type: string, format: date-time}
+        dueDate: {type: string, format: date-time}
+        currency: {type: string, minLength: 3, maxLength: 3}
+        items: {type: array, items: {type: object}}
+  responses:
+    Success:
+      description: Successful operation
+      content:
+        application/json:
+          schema: {type: object}
+    Unauthorized:
+      description: Authentication failed

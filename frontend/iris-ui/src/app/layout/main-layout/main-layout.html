@@ -1,0 +1,31 @@
+<div class="app-layout">
+
+  
+  <app-sidebar
+    [isOpen]="sidebarOpen"
+    [class.sidebar-open]="sidebarOpen"
+    [class.sidebar-closed]="!sidebarOpen"
+    (sidebarStateChange)="sidebarOpen = $event">
+  </app-sidebar>
+
+
+  
+  <div class="app-main">
+
+    
+    <app-header
+      [sidebarOpen]="sidebarOpen"
+      (menuToggle)="toggleSidebar()">
+    </app-header>
+
+
+    
+    <main class="page-content">
+
+      <router-outlet></router-outlet>
+
+    </main>
+
+  </div>
+
+</div>

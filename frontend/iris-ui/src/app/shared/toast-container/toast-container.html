@@ -1,0 +1,37 @@
+
+<div
+  class="toast-container"
+  aria-label="Application notifications"
+  aria-live="polite"
+  aria-relevant="additions removals"
+>
+  @for (toast of (toasts$ | async) ?? []; track toast.id) {
+    <section
+      class="toast"
+      [class.toast-success]="toast.type === 'success'"
+      [class.toast-error]="toast.type === 'error'"
+      [class.toast-warning]="toast.type === 'warning'"
+      [class.toast-info]="toast.type === 'info'"
+      role="status"
+    >
+      <div class="toast-icon" aria-hidden="true">
+        {{ getIcon(toast.type) }}
+      </div>
+
+      <div class="toast-content">
+        <strong>{{ toast.title }}</strong>
+        <p>{{ toast.message }}</p>
+        <small>Automatically closes after 2 minutes</small>
+      </div>
+
+      <button
+        type="button"
+        class="toast-close"
+        aria-label="Close notification"
+        (click)="dismiss(toast.id)"
+      >
+        &times;
+      </button>
+    </section>
+  }
+</div>

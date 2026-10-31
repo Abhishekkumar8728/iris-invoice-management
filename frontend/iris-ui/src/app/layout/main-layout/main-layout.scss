@@ -1,0 +1,61 @@
+.app-layout {
+  min-height: 100vh;
+
+  display: flex;
+
+  background: #020807;
+}
+
+app-sidebar {
+  display: block;
+  flex: 0 0 0;
+  width: 0;
+  min-width: 0;
+  height: 100vh;
+  align-self: flex-start;
+  position: sticky;
+  top: 0;
+  overflow: hidden;
+  transition: flex-basis 0.14s ease-out, width 0.14s ease-out;
+}
+
+app-sidebar.sidebar-open {
+  flex-basis: 240px;
+  width: 240px;
+}
+
+app-sidebar.sidebar-closed {
+  flex-basis: 0;
+  width: 0;
+  transition: none;
+}
+
+
+
+
+.app-main {
+  min-width: 0;
+
+  flex: 1;
+
+  min-height: 100vh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  background: #020807;
+}
+
+
+
+
+.page-content {
+  flex: 1;
+
+  min-width: 0;
+
+  width: 100%;
+
+  padding: 0;
+}

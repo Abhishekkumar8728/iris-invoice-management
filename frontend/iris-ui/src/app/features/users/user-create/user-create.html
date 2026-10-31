@@ -1,0 +1,492 @@
+<section class="user-form-page">
+
+  
+  <div class="user-page-header">
+
+    <div class="header-content">
+
+      <div class="breadcrumb">
+        Administration
+        <span>/</span>
+        Users
+        <span>/</span>
+        {{ isEditMode ? 'Edit User' : 'Create User' }}
+      </div>
+
+      <h1>
+        {{ isEditMode ? 'Edit User' : 'Create User' }}
+      </h1>
+
+      <p>
+        {{
+          isEditMode
+            ? 'Update employee account and access details.'
+            : 'Create a new IRIS employee account.'
+        }}
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      mat-stroked-button
+      class="back-button"
+      (click)="cancel()">
+
+      <mat-icon>arrow_back</mat-icon>
+
+      Back to Users
+
+    </button>
+
+  </div>
+
+
+  
+  <div
+    *ngIf="loading"
+    class="loading-card">
+
+    <mat-spinner diameter="42"></mat-spinner>
+
+    <div>
+      <h4>Loading user...</h4>
+      <p>Please wait while user information is loaded.</p>
+    </div>
+
+  </div>
+
+
+  
+  <div
+    *ngIf="!loading && errorMessage"
+    class="message-card error-message">
+
+    <mat-icon>error_outline</mat-icon>
+
+    <div>
+      <strong>Something went wrong</strong>
+      <p>{{ errorMessage }}</p>
+    </div>
+
+  </div>
+
+
+  
+  <div
+    *ngIf="!loading"
+    class="form-card">
+
+    
+    <div class="form-card-header">
+
+      <div class="section-icon">
+        <mat-icon>person_add</mat-icon>
+      </div>
+
+      <div>
+        <h2>
+          Employee Information
+        </h2>
+
+        <p>
+          Enter the employee's basic account information.
+        </p>
+      </div>
+
+    </div>
+
+
+    <div class="form-card-body">
+
+      
+      <div class="form-section">
+
+        <div class="section-title">
+          <mat-icon>badge</mat-icon>
+          <span>Employee Information</span>
+        </div>
+
+
+        <div class="form-grid">
+
+          
+          <mat-form-field
+            appearance="outline"
+            class="full-width">
+
+            <mat-label>Employee ID</mat-label>
+
+            <mat-icon matPrefix>
+              badge
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              [(ngModel)]="employeeId"
+              placeholder="Enter employee ID"
+              maxlength="30">
+
+            <mat-hint>
+              2–30 characters
+            </mat-hint>
+
+          </mat-form-field>
+
+
+          
+          <mat-form-field
+            appearance="outline"
+            class="full-width">
+
+            <mat-label>Full Name</mat-label>
+
+            <mat-icon matPrefix>
+              person
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              [(ngModel)]="name"
+              placeholder="Enter full name"
+              maxlength="100">
+
+          </mat-form-field>
+
+
+          
+          <mat-form-field
+            appearance="outline"
+            class="full-width">
+
+            <mat-label>Email Address</mat-label>
+
+            <mat-icon matPrefix>
+              email
+            </mat-icon>
+
+            <input
+              matInput
+              type="email"
+              [(ngModel)]="email"
+              placeholder="employee@example.com">
+
+          </mat-form-field>
+
+
+          
+          <mat-form-field
+            appearance="outline"
+            class="full-width">
+
+            <mat-label>Mobile Number</mat-label>
+
+            <mat-icon matPrefix>
+              phone
+            </mat-icon>
+
+            <input
+              matInput
+              type="tel"
+              [(ngModel)]="mobile"
+              maxlength="10"
+              placeholder="10 digit mobile number">
+
+            <mat-hint>
+              Optional
+            </mat-hint>
+
+          </mat-form-field>
+
+        </div>
+
+      </div>
+
+
+      
+      <div class="form-section">
+
+        <div class="section-title">
+          <mat-icon>business</mat-icon>
+          <span>Organization & Access</span>
+        </div>
+
+
+        <div class="form-grid">
+
+          
+          <mat-form-field
+            appearance="outline"
+            class="full-width">
+
+            <mat-label>Role</mat-label>
+
+            <mat-icon matPrefix>
+              admin_panel_settings
+            </mat-icon>
+
+            <mat-select [(ngModel)]="role">
+
+              <mat-option
+                *ngFor="let item of roles"
+                [value]="item">
+
+                {{ item }}
+
+              </mat-option>
+
+            </mat-select>
+
+          </mat-form-field>
+
+
+          
+          <mat-form-field
+            appearance="outline"
+            class="full-width">
+
+            <mat-label>Department</mat-label>
+
+            <mat-icon matPrefix>
+              corporate_fare
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              [(ngModel)]="department"
+              placeholder="Enter department">
+
+          </mat-form-field>
+
+
+          
+          <mat-form-field
+            appearance="outline"
+            class="full-width">
+
+            <mat-label>Designation</mat-label>
+
+            <mat-icon matPrefix>
+              work
+            </mat-icon>
+
+            <input
+              matInput
+              type="text"
+              [(ngModel)]="designation"
+              placeholder="Enter designation">
+
+          </mat-form-field>
+
+
+          
+          <div class="active-control">
+
+            <mat-checkbox
+              [(ngModel)]="isActive">
+
+              Active User
+
+            </mat-checkbox>
+
+            <span>
+              User can access the IRIS system.
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      
+      <div
+        *ngIf="!isEditMode"
+        class="form-section">
+
+        <div class="section-title">
+          <mat-icon>lock</mat-icon>
+          <span>Account Password</span>
+        </div>
+
+
+        <div class="form-grid">
+
+          
+          <mat-form-field
+            appearance="outline"
+            class="full-width">
+
+            <mat-label>Password</mat-label>
+
+            <mat-icon matPrefix>
+              lock
+            </mat-icon>
+
+            <input
+              matInput
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="password"
+              placeholder="Enter password">
+
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
+              (click)="togglePassword()">
+
+              <mat-icon>
+                {{ showPassword ? 'visibility_off' : 'visibility' }}
+              </mat-icon>
+
+            </button>
+
+          </mat-form-field>
+
+
+          
+          <mat-form-field
+            appearance="outline"
+            class="full-width">
+
+            <mat-label>Confirm Password</mat-label>
+
+            <mat-icon matPrefix>
+              lock_outline
+            </mat-icon>
+
+            <input
+              matInput
+              [type]="showConfirmPassword ? 'text' : 'password'"
+              [(ngModel)]="confirmPassword"
+              placeholder="Confirm password">
+
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              [attr.aria-label]="showConfirmPassword ? 'Hide password' : 'Show password'"
+              (click)="toggleConfirmPassword()">
+
+              <mat-icon>
+                {{ showConfirmPassword ? 'visibility_off' : 'visibility' }}
+              </mat-icon>
+
+            </button>
+
+          </mat-form-field>
+
+        </div>
+
+
+        
+        <div
+          *ngIf="password"
+          class="password-strength">
+
+          <div class="strength-header">
+
+            <span>Password strength</span>
+
+            <strong
+              [class.weak]="passwordStrength === 'weak'"
+              [class.medium]="passwordStrength === 'medium'"
+              [class.strong]="passwordStrength === 'strong'">
+
+              {{ passwordStrength | titlecase }}
+
+            </strong>
+
+          </div>
+
+          <div class="strength-bar">
+
+            <span
+              [class.weak]="passwordStrength === 'weak'"
+              [class.medium]="passwordStrength === 'medium'"
+              [class.strong]="passwordStrength === 'strong'">
+            </span>
+
+          </div>
+
+          <small>
+            Password should contain at least 8 characters,
+            uppercase, lowercase and a number.
+          </small>
+
+        </div>
+
+      </div>
+
+
+      
+      <div
+        *ngIf="errorMessage"
+        class="message-card error-message">
+
+        <mat-icon>error_outline</mat-icon>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+
+      
+      <div class="form-actions">
+
+        <button
+          type="button"
+          mat-stroked-button
+          class="cancel-button"
+          [disabled]="saving"
+          (click)="cancel()">
+
+          <mat-icon>
+            close
+          </mat-icon>
+
+          Cancel
+
+        </button>
+
+
+        <button
+          type="button"
+          mat-flat-button
+          class="save-button"
+          [disabled]="saving"
+          (click)="save()">
+
+          <mat-spinner
+            *ngIf="saving"
+            diameter="20">
+          </mat-spinner>
+
+          <mat-icon *ngIf="!saving">
+            {{ isEditMode ? 'save' : 'person_add' }}
+          </mat-icon>
+
+          <span>
+            {{
+              saving
+                ? 'Saving...'
+                : (isEditMode ? 'Save Changes' : 'Create User')
+            }}
+          </span>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>

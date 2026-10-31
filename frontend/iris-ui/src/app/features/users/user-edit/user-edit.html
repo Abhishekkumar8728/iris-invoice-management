@@ -1,0 +1,455 @@
+<section class="user-edit-page">
+
+  
+  <div class="page-header">
+
+    <div>
+
+      <div class="breadcrumb">
+        Administration
+        <span>/</span>
+        Users
+        <span>/</span>
+        Edit User
+      </div>
+
+      <h1>
+        Edit User
+      </h1>
+
+      <p>
+        Update user information and access.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      mat-stroked-button
+      class="back-button"
+      (click)="cancel()">
+
+      <mat-icon>
+        arrow_back
+      </mat-icon>
+
+      Back to Users
+
+    </button>
+
+  </div>
+
+
+  
+  <div
+    *ngIf="loadingUser"
+    class="loading-card">
+
+    <mat-spinner diameter="42"></mat-spinner>
+
+    <div>
+
+      <h3>
+        Loading user...
+      </h3>
+
+      <p>
+        Please wait while user information is loaded.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  
+  <div
+    *ngIf="!loadingUser && errorMessage"
+    class="message-card error-message">
+
+    <mat-icon>
+      error_outline
+    </mat-icon>
+
+    <span>
+      {{ errorMessage }}
+    </span>
+
+  </div>
+
+
+  
+  <div
+    *ngIf="!loadingUser && !errorMessage"
+    class="form-card">
+
+    <form
+      [formGroup]="userForm"
+      (ngSubmit)="submit()">
+
+
+      <div class="form-card-header">
+
+        <div class="section-icon">
+          <mat-icon>
+            manage_accounts
+          </mat-icon>
+        </div>
+
+        <div>
+
+          <h2>
+            Employee Information
+          </h2>
+
+          <p>
+            Update the employee account details.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-card-body">
+
+
+        
+        <div class="form-section">
+
+          <div class="section-title">
+
+            <mat-icon>
+              badge
+            </mat-icon>
+
+            <span>
+              Employee Information
+            </span>
+
+          </div>
+
+
+          <div class="form-grid">
+
+            
+            <mat-form-field
+              appearance="outline"
+              class="full-width">
+
+              <mat-label>
+                Employee ID
+              </mat-label>
+
+              <mat-icon matPrefix>
+                badge
+              </mat-icon>
+
+              <input
+                matInput
+                type="text"
+                formControlName="employeeId">
+
+              <mat-hint>
+                Employee ID cannot be changed.
+              </mat-hint>
+
+            </mat-form-field>
+
+
+            
+            <mat-form-field
+              appearance="outline"
+              class="full-width">
+
+              <mat-label>
+                Full Name
+              </mat-label>
+
+              <mat-icon matPrefix>
+                person
+              </mat-icon>
+
+              <input
+                matInput
+                type="text"
+                formControlName="name">
+
+              <mat-error
+                *ngIf="f.name.touched && f.name.invalid">
+
+                Please enter a valid name.
+
+              </mat-error>
+
+            </mat-form-field>
+
+
+            
+            <mat-form-field
+              appearance="outline"
+              class="full-width">
+
+              <mat-label>
+                Email Address
+              </mat-label>
+
+              <mat-icon matPrefix>
+                email
+              </mat-icon>
+
+              <input
+                matInput
+                type="email"
+                formControlName="email">
+
+              <mat-error
+                *ngIf="f.email.touched && f.email.invalid">
+
+                Please enter a valid email.
+
+              </mat-error>
+
+            </mat-form-field>
+
+
+            
+            <mat-form-field
+              appearance="outline"
+              class="full-width">
+
+              <mat-label>
+                Mobile Number
+              </mat-label>
+
+              <mat-icon matPrefix>
+                phone
+              </mat-icon>
+
+              <input
+                matInput
+                type="tel"
+                maxlength="10"
+                formControlName="mobile">
+
+              <mat-error
+                *ngIf="f.mobile.touched && f.mobile.invalid">
+
+                Mobile number must contain 10 digits.
+
+              </mat-error>
+
+            </mat-form-field>
+
+          </div>
+
+        </div>
+
+
+        
+        <div class="form-section">
+
+          <div class="section-title">
+
+            <mat-icon>
+              business
+            </mat-icon>
+
+            <span>
+              Organization & Access
+            </span>
+
+          </div>
+
+
+          <div class="form-grid">
+
+
+            
+            <mat-form-field
+              appearance="outline"
+              class="full-width">
+
+              <mat-label>
+                Role
+              </mat-label>
+
+              <mat-icon matPrefix>
+                admin_panel_settings
+              </mat-icon>
+
+              <mat-select formControlName="role">
+
+                <mat-option value="USER">
+                  User
+                </mat-option>
+
+                <mat-option value="FINANCE">
+                  Finance
+                </mat-option>
+
+                <mat-option value="APPROVER">
+                  Approver
+                </mat-option>
+
+                <mat-option value="ADMIN">
+                  Admin
+                </mat-option>
+
+              </mat-select>
+
+              <mat-error
+                *ngIf="f.role.touched && f.role.invalid">
+
+                Please select a role.
+
+              </mat-error>
+
+            </mat-form-field>
+
+
+            
+            <mat-form-field
+              appearance="outline"
+              class="full-width">
+
+              <mat-label>
+                Department
+              </mat-label>
+
+              <mat-icon matPrefix>
+                corporate_fare
+              </mat-icon>
+
+              <input
+                matInput
+                type="text"
+                formControlName="department">
+
+            </mat-form-field>
+
+
+            
+            <mat-form-field
+              appearance="outline"
+              class="full-width">
+
+              <mat-label>
+                Designation
+              </mat-label>
+
+              <mat-icon matPrefix>
+                work
+              </mat-icon>
+
+              <input
+                matInput
+                type="text"
+                formControlName="designation">
+
+            </mat-form-field>
+
+
+            
+            <div class="active-control">
+
+              <mat-checkbox
+                formControlName="isActive">
+
+                Active User
+
+              </mat-checkbox>
+
+              <span>
+                User can access the IRIS system.
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        
+        <div
+          *ngIf="successMessage"
+          class="message-card success-message">
+
+          <mat-icon>
+            check_circle
+          </mat-icon>
+
+          <span>
+            {{ successMessage }}
+          </span>
+
+        </div>
+
+
+        
+        <div
+          *ngIf="errorMessage"
+          class="message-card error-message">
+
+          <mat-icon>
+            error_outline
+          </mat-icon>
+
+          <span>
+            {{ errorMessage }}
+          </span>
+
+        </div>
+
+
+        
+        <div class="form-actions">
+
+          <button
+            type="button"
+            mat-stroked-button
+            class="cancel-button"
+            [disabled]="loading"
+            (click)="cancel()">
+
+            <mat-icon>
+              close
+            </mat-icon>
+
+            Cancel
+
+          </button>
+
+
+          <button
+            type="submit"
+            mat-flat-button
+            class="save-button"
+            [disabled]="loading">
+
+            <mat-spinner
+              *ngIf="loading"
+              diameter="20">
+            </mat-spinner>
+
+            <mat-icon *ngIf="!loading">
+              save
+            </mat-icon>
+
+            <span>
+              {{ loading ? 'Saving...' : 'Save Changes' }}
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</section>

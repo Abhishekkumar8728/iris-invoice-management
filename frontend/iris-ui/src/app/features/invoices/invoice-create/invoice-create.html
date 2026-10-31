@@ -1,0 +1,401 @@
+
+<div class="create-invoice-page" [formGroup]="invoiceForm">
+
+  
+  <header class="page-heading">
+    <div class="heading-main">
+      <div class="breadcrumb">
+        <span>Invoices</span>
+        <span class="breadcrumb-separator">›</span>
+        <span class="current">{{ isEditMode ? 'Edit' : 'Create' }}</span>
+      </div>
+
+      <div class="title-row">
+        <div class="title-icon">
+          <mat-icon>post_add</mat-icon>
+        </div>
+
+        <div>
+          <h1>{{ isEditMode ? 'Edit Invoice' : 'Create Invoice' }}</h1>
+          <p>{{ isEditMode ? 'Update invoice details' : 'Create a new invoice and submit it for processing' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <button
+      mat-stroked-button
+      type="button"
+      class="back-button"
+      (click)="cancel()">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Invoices
+    </button>
+  </header>
+
+  
+  <div class="alert alert-error" *ngIf="errorMessage" role="alert">
+    <mat-icon>error_outline</mat-icon>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <div class="alert alert-success" *ngIf="successMessage" role="status">
+    <mat-icon>check_circle</mat-icon>
+    <span>{{ successMessage }}</span>
+  </div>
+
+  
+  <div class="top-grid">
+
+    <section class="panel vendor-panel">
+      <div class="panel-heading">
+        <div class="section-icon">
+          <mat-icon>domain</mat-icon>
+        </div>
+
+        <div>
+          <h2>Vendor Information</h2>
+          <p>Enter the vendor details for this invoice</p>
+        </div>
+      </div>
+
+      <div class="panel-body" formGroupName="vendor">
+        <div class="vendor-grid">
+
+          <mat-form-field appearance="outline" class="dark-field">
+            <mat-label>Vendor Code *</mat-label>
+            <mat-icon matPrefix>badge</mat-icon>
+            <input matInput formControlName="vendorCode"
+              placeholder="Enter vendor code" />
+            <mat-error *ngIf="invoiceForm.controls.vendor.controls.vendorCode.hasError('required')">
+              Vendor code is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="dark-field">
+            <mat-label>Vendor Name *</mat-label>
+            <mat-icon matPrefix>business</mat-icon>
+            <input matInput formControlName="name"
+              placeholder="Enter vendor name" />
+            <mat-error *ngIf="invoiceForm.controls.vendor.controls.name.hasError('required')">
+              Vendor name is required.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="dark-field">
+            <mat-label>GSTIN</mat-label>
+            <mat-icon matPrefix>verified</mat-icon>
+            <input matInput formControlName="gstin"
+              placeholder="Enter GSTIN" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="dark-field">
+            <mat-label>Email</mat-label>
+            <mat-icon matPrefix>mail</mat-icon>
+            <input matInput type="email" formControlName="email"
+              placeholder="Enter email address" />
+            <mat-error *ngIf="invoiceForm.controls.vendor.controls.email.hasError('email')">
+              Enter a valid email address.
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="dark-field">
+            <mat-label>Mobile</mat-label>
+            <mat-icon matPrefix>call</mat-icon>
+            <input matInput type="tel" formControlName="mobile"
+              placeholder="Enter mobile number" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="dark-field address-field">
+            <mat-label>Address</mat-label>
+            <mat-icon matPrefix>location_on</mat-icon>
+            <textarea matInput formControlName="address" rows="2"
+              placeholder="Enter complete address"></textarea>
+          </mat-form-field>
+
+        </div>
+      </div>
+    </section>
+
+    
+    <aside class="summary-panel">
+      <div class="summary-heading">
+        <div class="summary-icon">
+          <mat-icon>currency_rupee</mat-icon>
+        </div>
+        <div>
+          <h2>Invoice Summary</h2>
+          <p>Tax and payable amount</p>
+        </div>
+      </div>
+
+      <div class="summary-body">
+        <div class="summary-row">
+          <span>Taxable Amount</span>
+          <strong>{{ formatCurrency(taxableAmount) }}</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Item Tax</span>
+          <strong>{{ formatCurrency(itemTaxAmount) }}</strong>
+        </div>
+
+        <div class="summary-row">
+          <span>Additional GST</span>
+          <strong>{{ formatCurrency(additionalTax) }}</strong>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <div class="grand-total">
+          <span>Grand Total</span>
+          <strong>{{ formatCurrency(grandTotal) }}</strong>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  
+  <section class="panel invoice-info-panel">
+    <div class="panel-heading">
+      <div class="section-icon cyan-icon">
+        <mat-icon>description</mat-icon>
+      </div>
+      <div>
+        <h2>Invoice Information</h2>
+        <p>Enter invoice date, currency and purchase order details</p>
+      </div>
+    </div>
+
+    <div class="panel-body">
+      <div class="invoice-info-grid">
+
+        <mat-form-field appearance="outline" class="dark-field">
+          <mat-label>Invoice Date *</mat-label>
+          <mat-icon matPrefix>calendar_month</mat-icon>
+          <input matInput [matDatepicker]="invoiceDatePicker" formControlName="invoiceDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="invoiceDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #invoiceDatePicker panelClass="iris-calendar-panel"></mat-datepicker>
+          <mat-error *ngIf="invoiceForm.controls.invoiceDate.hasError('required')">
+            Invoice date is required.
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="dark-field">
+          <mat-label>Due Date</mat-label>
+          <mat-icon matPrefix>event</mat-icon>
+          <input matInput [matDatepicker]="dueDatePicker" formControlName="dueDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="dueDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #dueDatePicker panelClass="iris-calendar-panel"></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="dark-field">
+          <mat-label>Currency *</mat-label>
+          <mat-icon matPrefix>currency_exchange</mat-icon>
+          <mat-select formControlName="currency">
+            <mat-option *ngFor="let currency of currencies" [value]="currency.code">
+              {{ currency.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="dark-field">
+          <mat-label>PO Number</mat-label>
+          <mat-icon matPrefix>confirmation_number</mat-icon>
+          <input matInput formControlName="purchaseOrderNumber"
+            placeholder="Enter PO number" />
+        </mat-form-field>
+
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="panel items-panel">
+    <div class="panel-heading items-heading">
+      <div class="heading-title">
+        <div class="section-icon purple-icon">
+          <mat-icon>inventory_2</mat-icon>
+        </div>
+        <div>
+          <h2>Invoice Items</h2>
+          <p>Add products or services included in this invoice</p>
+        </div>
+      </div>
+
+      <button mat-stroked-button type="button"
+        class="add-item-button" (click)="addItem()">
+        <mat-icon>add</mat-icon>
+        Add Item
+      </button>
+    </div>
+
+    <div class="items-table-wrapper" formArrayName="items">
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th class="number-column">#</th>
+            <th class="description-column">Description</th>
+            <th class="quantity-column">Quantity</th>
+            <th class="price-column">Unit Price</th>
+            <th class="tax-column">Tax %</th>
+            <th class="amount-column">Taxable Amount</th>
+            <th class="amount-column">Total</th>
+            <th class="action-column">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of items.controls; let i = index"
+            [formGroupName]="i">
+            <td class="row-number">{{ i + 1 }}</td>
+
+            <td>
+              <mat-form-field appearance="outline" class="dark-field table-field">
+                <mat-label>Description *</mat-label>
+                <input matInput formControlName="description"
+                  placeholder="Enter description" />
+                <mat-error *ngIf="item.get('description')?.hasError('required')">
+                  Required
+                </mat-error>
+              </mat-form-field>
+            </td>
+
+            <td>
+              <mat-form-field appearance="outline" class="dark-field table-field">
+                <mat-label>Quantity *</mat-label>
+                <input matInput type="number" min="0.01" step="any"
+                  formControlName="quantity" />
+                <mat-error *ngIf="item.get('quantity')?.invalid">
+                  Enter a quantity above 0.
+                </mat-error>
+              </mat-form-field>
+            </td>
+
+            <td>
+              <mat-form-field appearance="outline" class="dark-field table-field">
+                <mat-label>Unit Price *</mat-label>
+                <input matInput type="number" min="0" step="any"
+                  formControlName="unitPrice" />
+                <mat-error *ngIf="item.get('unitPrice')?.invalid">
+                  Enter a valid price.
+                </mat-error>
+              </mat-form-field>
+            </td>
+
+            <td>
+              <mat-form-field appearance="outline" class="dark-field table-field">
+                <mat-label>Tax %</mat-label>
+                <input matInput type="number" min="0" max="100" step="any"
+                  formControlName="taxRate" />
+                <mat-error *ngIf="item.get('taxRate')?.invalid">
+                  Use 0–100%.
+                </mat-error>
+              </mat-form-field>
+            </td>
+
+            <td>
+              <div class="amount-chip">
+                <small>TAXABLE</small>
+                <strong>{{ formatCurrency(getItemTaxableAmount(i)) }}</strong>
+              </div>
+            </td>
+
+            <td>
+              <div class="amount-chip total-chip">
+                <small>TOTAL</small>
+                <strong>{{ formatCurrency(getItemTotal(i)) }}</strong>
+              </div>
+            </td>
+
+            <td class="delete-cell">
+              <button mat-icon-button type="button"
+                class="delete-button"
+                aria-label="Remove invoice item"
+                [disabled]="items.length === 1"
+                (click)="removeItem(i)">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  
+  <section class="panel gst-panel">
+    <div class="panel-heading">
+      <div class="section-icon blue-icon">
+        <mat-icon>percent</mat-icon>
+      </div>
+      <div>
+        <h2>Additional GST</h2>
+        <p>Add applicable GST amounts</p>
+      </div>
+    </div>
+
+    <div class="panel-body">
+      <div class="gst-grid">
+
+        <mat-form-field appearance="outline" class="dark-field">
+          <mat-label>CGST Amount</mat-label>
+          <mat-icon matPrefix>percent</mat-icon>
+          <input matInput type="number" min="0" step="any"
+            formControlName="cgst" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="dark-field">
+          <mat-label>SGST Amount</mat-label>
+          <mat-icon matPrefix>percent</mat-icon>
+          <input matInput type="number" min="0" step="any"
+            formControlName="sgst" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="dark-field">
+          <mat-label>IGST Amount</mat-label>
+          <mat-icon matPrefix>percent</mat-icon>
+          <input matInput type="number" min="0" step="any"
+            formControlName="igst" />
+        </mat-form-field>
+
+      </div>
+    </div>
+  </section>
+
+  
+  <footer class="form-actions">
+    <button mat-stroked-button type="button"
+      class="cancel-button" (click)="cancel()"
+      [disabled]="isLoading">
+      <mat-icon>close</mat-icon>
+      Cancel
+    </button>
+
+    <button *ngIf="!isEditMode" mat-stroked-button type="button"
+      class="draft-button" (click)="saveDraft()"
+      [disabled]="isLoading">
+      <mat-icon>save</mat-icon>
+      Save Draft
+    </button>
+
+    <button *ngIf="!isEditMode" mat-flat-button type="button"
+      class="submit-button"
+      (click)="submitInvoice('SUBMITTED')"
+      [disabled]="isLoading">
+      <mat-spinner *ngIf="isLoading" diameter="18"></mat-spinner>
+      <mat-icon *ngIf="!isLoading">send</mat-icon>
+      {{ isLoading ? 'Processing...' : 'Submit Invoice' }}
+    </button>
+
+    <button *ngIf="isEditMode" mat-flat-button type="button"
+      class="submit-button"
+      (click)="saveChanges()"
+      [disabled]="isLoading">
+      <mat-spinner *ngIf="isLoading" diameter="18"></mat-spinner>
+      <mat-icon *ngIf="!isLoading">save</mat-icon>
+      {{ isLoading ? 'Saving...' : 'Save Changes' }}
+    </button>
+  </footer>
+
+</div>

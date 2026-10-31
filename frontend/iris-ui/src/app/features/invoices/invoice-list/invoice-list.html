@@ -1,0 +1,236 @@
+
+<div class="invoice-page">
+  
+  <header class="page-heading">
+    <div class="heading-copy">
+      <div class="breadcrumb">
+        <i class="bi bi-house-door-fill"></i>
+        <span>Dashboard</span>
+        <i class="bi bi-chevron-right"></i>
+        <span>Invoice Management</span>
+      </div>
+
+      <h1>Invoice Management</h1>
+      <p>Manage, track and monitor all your invoice records in one place.</p>
+    </div>
+
+    <button class="btn-create" type="button" (click)="createInvoice()">
+      <i class="bi bi-plus-lg"></i>
+      <span>Create Invoice</span>
+    </button>
+  </header>
+
+  
+
+  
+  <section class="panel invoice-panel">
+    <div class="panel-header invoice-list-header">
+      <div class="panel-title">
+        <div class="panel-icon list-icon">
+          <i class="bi bi-receipt"></i>
+        </div>
+
+        <div>
+          <h2>Invoice List</h2>
+          <p>
+            Showing {{ showingFrom }}–{{ showingTo }} of
+            {{ totalInvoices | number }} records
+          </p>
+        </div>
+      </div>
+
+      <mat-form-field
+        appearance="outline"
+        class="invoice-list-search"
+        subscriptSizing="dynamic">
+        <mat-icon matIconPrefix aria-hidden="true">search</mat-icon>
+
+        <input
+          matInput
+          type="text"
+          placeholder="Search by Invoice No, Vendor, PO Number..."
+          [formControl]="filterForm.controls.search"
+          aria-label="Search invoices, vendors, and purchase orders" />
+      </mat-form-field>
+    </div>
+
+    
+    <div class="error-message" *ngIf="errorMessage">
+      <i class="bi bi-exclamation-triangle-fill"></i>
+      {{ errorMessage }}
+    </div>
+
+    
+    <div class="loading-state" *ngIf="isLoading">
+      <span class="loading-spinner"></span>
+      <span>Loading invoices...</span>
+    </div>
+
+    
+    <div class="table-responsive" *ngIf="!isLoading">
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th class="check-column">#</th>
+            <th>Invoice No.</th>
+            <th>Vendor</th>
+            <th>PO Number</th>
+            <th>Invoice Date</th>
+            <th>Status</th>
+            <th class="actions-column">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let invoice of invoices; let i = index">
+            <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+
+            <td>
+              <button
+                class="invoice-number"
+                type="button"
+                (click)="viewInvoice(invoice)">
+                {{ $any(invoice).invoiceNumber || $any(invoice).invoiceNo || $any(invoice)._id }}
+              </button>
+            </td>
+
+            <td>
+              {{ $any(invoice).vendorName || $any(invoice).vendor?.name || $any(invoice).vendorCode || '—' }}
+            </td>
+
+            <td>
+              {{ $any(invoice).poNumber || $any(invoice).purchaseOrderNumber || '—' }}
+            </td>
+
+            <td>
+              {{ $any(invoice).invoiceDate
+                ? ($any(invoice).invoiceDate | date:'dd MMM yyyy')
+                : '—' }}
+            </td>
+
+            <td>
+              <span
+                class="status-badge"
+                [ngClass]="getStatusClass(invoice.status)">
+                {{ formatStatus(invoice.status) }}
+              </span>
+            </td>
+
+            <td>
+              <div class="row-actions">
+                <button
+                  *ngIf="canForwardForReview(invoice)"
+                  type="button"
+                  class="row-action"
+                  title="Forward for review"
+                  aria-label="Forward invoice for review"
+                  [disabled]="forwardingInvoiceIds.has(invoice._id)"
+                  [class.is-loading]="forwardingInvoiceIds.has(invoice._id)"
+                  (click)="forwardForReview(invoice)">
+                  <i
+                    class="bi"
+                    [ngClass]="forwardingInvoiceIds.has(invoice._id) ? 'bi-arrow-repeat' : 'bi-send'">
+                  </i>
+                </button>
+
+                <button
+                  type="button"
+                  class="row-action"
+                  title="View invoice"
+                  aria-label="View invoice"
+                  (click)="viewInvoice(invoice)">
+                  <i class="bi bi-eye"></i>
+                </button>
+
+                <button
+                  *ngIf="canEditInvoice(invoice)"
+                  type="button"
+                  class="row-action"
+                  title="Edit invoice"
+                  aria-label="Edit invoice"
+                  (click)="editInvoice(invoice)">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          
+          <tr *ngIf="invoices.length === 0">
+            <td colspan="7" class="empty-state">
+              <i class="bi bi-inbox"></i>
+              <strong>No invoices found</strong>
+              <span>Try changing your search criteria.</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    
+    <div class="pagination-footer" *ngIf="!isLoading">
+      <div class="page-size">
+        <span>Show</span>
+
+        <select
+          [value]="pageSize"
+          (change)="changePageSize($any($event.target).value)"
+          aria-label="Records per page">
+          <option value="5">5</option>
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+        </select>
+
+        <span>entries</span>
+      </div>
+
+      <div class="pagination-summary">
+        Showing {{ showingFrom }} to {{ showingTo }}
+        of {{ totalInvoices }} entries
+      </div>
+
+      <nav class="pagination-controls" aria-label="Invoice pagination">
+        <button
+          type="button"
+          aria-label="First page"
+          (click)="goToPage(1)"
+          [disabled]="currentPage === 1">
+          <i class="bi bi-chevron-double-left"></i>
+        </button>
+
+        <button
+          type="button"
+          aria-label="Previous page"
+          (click)="previousPage()"
+          [disabled]="currentPage === 1">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <button
+          type="button"
+          *ngFor="let page of pages"
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
+
+        <button
+          type="button"
+          aria-label="Next page"
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages">
+          <i class="bi bi-chevron-right"></i>
+        </button>
+
+        <button
+          type="button"
+          aria-label="Last page"
+          (click)="goToPage(totalPages)"
+          [disabled]="currentPage === totalPages">
+          <i class="bi bi-chevron-double-right"></i>
+        </button>
+      </nav>
+    </div>
+  </section>
+</div>

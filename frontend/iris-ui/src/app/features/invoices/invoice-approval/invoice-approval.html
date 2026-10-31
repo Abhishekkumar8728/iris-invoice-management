@@ -1,0 +1,1272 @@
+<div class="invoice-approval-page">
+
+  
+
+  <div class="approval-header">
+
+    <div>
+
+      <div class="breadcrumb-text">
+
+        <mat-icon>
+          receipt_long
+        </mat-icon>
+
+        <span>Invoices</span>
+
+        <span>/</span>
+
+        <span>Approval</span>
+
+      </div>
+
+      <div class="approval-title-row">
+
+        <div class="approval-title-icon">
+
+          <mat-icon>
+            fact_check
+          </mat-icon>
+
+        </div>
+
+        <div>
+
+          <h1>
+            Invoice Approval
+          </h1>
+
+          <p>
+            Review invoice details and make an approval decision
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <button
+      type="button"
+      mat-stroked-button
+      class="back-button"
+      (click)="back()"
+    >
+
+      <mat-icon>
+        arrow_back
+      </mat-icon>
+
+      Back to Invoice
+
+    </button>
+
+  </div>
+
+
+  
+
+  @if (loading) {
+
+    <div class="state-card">
+
+      <mat-spinner
+        diameter="42"
+      ></mat-spinner>
+
+      <strong>
+        Loading invoice
+      </strong>
+
+      <span>
+        Please wait while we load the invoice details.
+      </span>
+
+    </div>
+
+  }
+
+
+  
+
+  @if (!loading && errorMessage && !invoice) {
+
+    <div class="error-card">
+
+      <div class="error-icon">
+
+        <mat-icon>
+          error_outline
+        </mat-icon>
+
+      </div>
+
+      <div class="error-content">
+
+        <strong>
+          Unable to load invoice
+        </strong>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+      <button
+        type="button"
+        mat-stroked-button
+        class="retry-button"
+        (click)="loadInvoice()"
+      >
+
+        <mat-icon>
+          refresh
+        </mat-icon>
+
+        Retry
+
+      </button>
+
+    </div>
+
+  }
+
+
+  
+
+  @if (!loading && invoice) {
+
+    
+
+    <section class="invoice-title-card">
+
+      <div class="invoice-title-left">
+
+        <span class="small-label">
+          INVOICE NUMBER
+        </span>
+
+        <h2>
+          {{ invoice.invoiceNumber }}
+        </h2>
+
+        <span class="invoice-created">
+
+          Created
+          {{ invoice.createdAt | date:'dd MMM yyyy, hh:mm a' }}
+
+        </span>
+
+      </div>
+
+
+      <span
+        class="status-badge"
+        [class]="getStatusClass(invoice.status)"
+      >
+
+        <span class="status-dot"></span>
+
+        {{ formatStatus(invoice.status) }}
+
+      </span>
+
+    </section>
+
+
+    
+
+    @if (successMessage) {
+
+      <div class="success-card">
+
+        <mat-icon>
+          check_circle
+        </mat-icon>
+
+        <span>
+          {{ successMessage }}
+        </span>
+
+      </div>
+
+    }
+
+
+    
+
+    @if (errorMessage) {
+
+      <div class="inline-error">
+
+        <mat-icon>
+          error_outline
+        </mat-icon>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+    }
+
+
+    
+
+    <div class="approval-grid">
+
+
+      
+
+      <main>
+
+
+        
+
+        <section class="section-card">
+
+          <div class="section-header">
+
+            <div class="section-heading">
+
+              <div class="section-icon vendor-icon">
+
+                <mat-icon>
+                  business
+                </mat-icon>
+
+              </div>
+
+              <div>
+
+                <h2>
+                  Vendor Information
+                </h2>
+
+                <p>
+                  Registered vendor details
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="info-grid">
+
+            <div class="info-item">
+
+              <span>
+                Vendor Name
+              </span>
+
+              <strong>
+                {{ invoice.vendor?.name || '—' }}
+              </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                Vendor Code
+              </span>
+
+              <strong>
+                {{ invoice.vendor?.vendorCode || '—' }}
+              </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                GSTIN
+              </span>
+
+              <strong>
+                {{ invoice.vendor?.gstin || '—' }}
+              </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                Email
+              </span>
+
+              <strong>
+                {{ invoice.vendor?.email || '—' }}
+              </strong>
+
+            </div>
+
+
+            <div class="info-item full-width">
+
+              <span>
+                Address
+              </span>
+
+              <strong>
+                {{ invoice.vendor?.address || '—' }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        
+
+        <section class="section-card">
+
+          <div class="section-header">
+
+            <div class="section-heading">
+
+              <div class="section-icon invoice-icon">
+
+                <mat-icon>
+                  description
+                </mat-icon>
+
+              </div>
+
+              <div>
+
+                <h2>
+                  Invoice Information
+                </h2>
+
+                <p>
+                  Invoice and purchase order details
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="info-grid">
+
+            <div class="info-item">
+
+              <span>
+                Invoice Date
+              </span>
+
+              <strong>
+                {{ invoice.invoiceDate | date:'dd MMM yyyy' }}
+              </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                Due Date
+              </span>
+
+              <strong>
+                {{
+                  invoice.dueDate
+                    ? (invoice.dueDate | date:'dd MMM yyyy')
+                    : '—'
+                }}
+              </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                Currency
+              </span>
+
+              <strong>
+                {{ invoice.currency || 'INR' }}
+              </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+              <span>
+                Purchase Order
+              </span>
+
+              <strong>
+                {{ invoice.purchaseOrderNumber || '—' }}
+              </strong>
+
+            </div>
+
+          </div>
+
+        </section>
+
+
+        
+
+        <section class="section-card">
+
+          <div class="section-header">
+
+            <div class="section-heading">
+
+              <div class="section-icon items-icon">
+
+                <mat-icon>
+                  list_alt
+                </mat-icon>
+
+              </div>
+
+              <div>
+
+                <h2>
+                  Invoice Items
+                </h2>
+
+                <p>
+                  Line items submitted for approval
+                </p>
+
+              </div>
+
+            </div>
+
+            <span class="item-count">
+
+              {{ items.length }}
+
+              {{ items.length === 1 ? 'Item' : 'Items' }}
+
+            </span>
+
+          </div>
+
+
+          @if (items.length > 0) {
+
+            <div class="table-wrapper">
+
+              <table class="items-table">
+
+                <thead>
+
+                  <tr>
+
+                    <th>
+                      #
+                    </th>
+
+                    <th>
+                      Description
+                    </th>
+
+                    <th>
+                      Qty
+                    </th>
+
+                    <th>
+                      Unit Price
+                    </th>
+
+                    <th>
+                      Tax
+                    </th>
+
+                    <th>
+                      Total
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                  @for (
+                    item of items;
+                    track $index
+                  ) {
+
+                    <tr>
+
+                      <td>
+
+                        <span class="item-number">
+                          {{ $index + 1 }}
+                        </span>
+
+                      </td>
+
+
+                      <td>
+
+                        <strong class="item-description">
+                          {{ item.description || '—' }}
+                        </strong>
+
+                      </td>
+
+
+                      <td>
+                        {{ item.quantity }}
+                      </td>
+
+
+                      <td>
+                        {{ formatCurrency(item.unitPrice) }}
+                      </td>
+
+
+                      <td>
+
+                        <span class="tax-value">
+                          {{ item.taxRate }}%
+                        </span>
+
+                      </td>
+
+
+                      <td>
+
+                        <strong class="item-total">
+
+                          {{
+                            formatCurrency(
+                              item.totalAmount
+                            )
+                          }}
+
+                        </strong>
+
+                      </td>
+
+                    </tr>
+
+                  }
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          } @else {
+
+            <div class="no-items">
+
+              <mat-icon>
+                inventory_2
+              </mat-icon>
+
+              <span>
+                No invoice items available.
+              </span>
+
+            </div>
+
+          }
+
+        </section>
+
+
+        
+
+        @if (canApprove || canReject) {
+
+          <section class="section-card decision-card">
+
+            <div class="section-header">
+
+              <div class="section-heading">
+
+                <div class="section-icon decision-icon">
+
+                  <mat-icon>
+                    verified_user
+                  </mat-icon>
+
+                </div>
+
+                <div>
+
+                  <h2>
+                    Approval Decision
+                  </h2>
+
+                  <p>
+                    Add comments before making your decision
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="decision-body">
+
+
+              <mat-form-field
+                appearance="outline"
+                class="comment-field"
+              >
+
+                <mat-label>
+                  Comment / Rejection Reason
+                </mat-label>
+
+                <mat-icon matPrefix>
+                  comment
+                </mat-icon>
+
+                <textarea
+                  matInput
+                  [(ngModel)]="comment"
+                  rows="5"
+                  placeholder="Enter your comments or rejection reason..."
+                ></textarea>
+
+                @if (canReject) {
+
+                  <mat-hint>
+                    A rejection reason is required when rejecting an invoice.
+                  </mat-hint>
+
+                }
+
+              </mat-form-field>
+
+
+              @if (showRejectReason) {
+
+                <div class="reject-warning">
+
+                  <mat-icon>
+                    warning
+                  </mat-icon>
+
+                  <span>
+                    Please review the rejection reason before confirming.
+                  </span>
+
+                </div>
+
+              }
+
+
+              <div class="decision-actions">
+
+
+                @if (canReject) {
+
+                  <button
+                    type="button"
+                    mat-stroked-button
+                    class="reject-button"
+                    (click)="openRejectBox()"
+                    [disabled]="processing"
+                  >
+
+                    <mat-icon>
+                      cancel
+                    </mat-icon>
+
+                    Reject Invoice
+
+                  </button>
+
+                }
+
+
+                @if (canApprove) {
+
+                  <button
+                    type="button"
+                    mat-flat-button
+                    class="approve-button"
+                    (click)="approve()"
+                    [disabled]="processing"
+                  >
+
+                    @if (processing) {
+
+                      <mat-spinner
+                        diameter="18"
+                      ></mat-spinner>
+
+                    } @else {
+
+                      <mat-icon>
+                        check_circle
+                      </mat-icon>
+
+                    }
+
+                    Approve Invoice
+
+                  </button>
+
+                }
+
+              </div>
+
+
+              @if (showRejectReason) {
+
+                <div class="reject-confirm-area">
+
+                  <div class="reject-confirm-content">
+
+                    <strong>
+                      Confirm Rejection
+                    </strong>
+
+                    <span>
+                      This action will move the invoice to REJECTED.
+                    </span>
+
+                  </div>
+
+
+                  <div class="reject-confirm-actions">
+
+                    <button
+                      type="button"
+                      mat-stroked-button
+                      class="cancel-button"
+                      (click)="closeRejectBox()"
+                      [disabled]="processing"
+                    >
+
+                      Cancel
+
+                    </button>
+
+
+                    <button
+                      type="button"
+                      mat-flat-button
+                      class="confirm-reject-button"
+                      (click)="reject()"
+                      [disabled]="processing"
+                    >
+
+                      @if (processing) {
+
+                        <mat-spinner
+                          diameter="17"
+                        ></mat-spinner>
+
+                      } @else {
+
+                        <mat-icon>
+                          block
+                        </mat-icon>
+
+                      }
+
+                      Confirm Rejection
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          </section>
+
+        }
+
+
+        
+
+        <section class="section-card">
+
+          <div class="section-header">
+
+            <div class="section-heading">
+
+              <div class="section-icon history-icon">
+
+                <mat-icon>
+                  history
+                </mat-icon>
+
+              </div>
+
+              <div>
+
+                <h2>
+                  Workflow History
+                </h2>
+
+                <p>
+                  Invoice status and approval activity
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          @if (auditHistory.length > 0) {
+
+            <div class="timeline">
+
+              @for (
+                entry of auditHistory;
+                track entry._id || $index
+              ) {
+
+                <div class="timeline-item">
+
+                  <div class="timeline-dot"></div>
+
+                  <div class="timeline-content">
+
+                    <div class="timeline-top">
+
+                      <strong>
+                        {{ getAuditAction(entry) }}
+                      </strong>
+
+                      <span>
+
+                        {{
+                          getAuditDate(entry)
+                            | date:'dd MMM yyyy, hh:mm a'
+                        }}
+
+                      </span>
+
+                    </div>
+
+
+                    @if (
+                      entry.fromStatus ||
+                      entry.toStatus
+                    ) {
+
+                      <div class="status-transition">
+
+                        <span>
+
+                          {{
+                            entry.fromStatus
+                              ? formatStatus(entry.fromStatus)
+                              : 'Created'
+                          }}
+
+                        </span>
+
+                        <mat-icon>
+                          arrow_forward
+                        </mat-icon>
+
+                        <span>
+
+                          {{
+                            entry.toStatus
+                              ? formatStatus(entry.toStatus)
+                              : '—'
+                          }}
+
+                        </span>
+
+                      </div>
+
+                    }
+
+
+                    @if (getAuditComment(entry)) {
+
+                      <p>
+                        {{ getAuditComment(entry) }}
+                      </p>
+
+                    }
+
+
+                    @if (entry.performedByRole) {
+
+                      <small>
+                        {{ entry.performedByRole }}
+                      </small>
+
+                    }
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          } @else {
+
+            <div class="no-history">
+
+              <mat-icon>
+                history
+              </mat-icon>
+
+              <span>
+                No workflow history available.
+              </span>
+
+            </div>
+
+          }
+
+        </section>
+
+      </main>
+
+
+      
+
+      <aside>
+
+
+        
+
+        <section class="summary-card">
+
+          <div class="summary-header">
+
+            <div>
+
+              <h2>
+                Invoice Summary
+              </h2>
+
+              <span>
+                Financial breakdown
+              </span>
+
+            </div>
+
+            <div class="summary-icon">
+
+              <mat-icon>
+                calculate
+              </mat-icon>
+
+            </div>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span>
+              Taxable Amount
+            </span>
+
+            <strong>
+              {{
+                formatCurrency(
+                  invoice.amounts?.taxableAmount
+                )
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span>
+              CGST
+            </span>
+
+            <strong>
+              {{
+                formatCurrency(
+                  invoice.amounts?.cgst
+                )
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span>
+              SGST
+            </span>
+
+            <strong>
+              {{
+                formatCurrency(
+                  invoice.amounts?.sgst
+                )
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span>
+              IGST
+            </span>
+
+            <strong>
+              {{
+                formatCurrency(
+                  invoice.amounts?.igst
+                )
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span>
+              Total Tax
+            </span>
+
+            <strong>
+              {{
+                formatCurrency(
+                  invoice.amounts?.totalTax
+                )
+              }}
+            </strong>
+
+          </div>
+
+
+          <div class="summary-divider"></div>
+
+
+          <div class="total-row">
+
+            <span>
+              Total Amount
+            </span>
+
+            <strong>
+              {{
+                formatCurrency(
+                  invoice.amounts?.totalAmount
+                )
+              }}
+            </strong>
+
+          </div>
+
+        </section>
+
+
+        
+
+        <section class="decision-status-card">
+
+          <div
+            class="decision-status-icon"
+            [class.status-review-icon]="invoice.status === 'UNDER_REVIEW'"
+            [class.status-approved-icon]="invoice.status === 'APPROVED'"
+            [class.status-rejected-icon]="invoice.status === 'REJECTED'"
+          >
+
+            @if (
+              invoice.status === 'UNDER_REVIEW'
+            ) {
+
+              <mat-icon>
+                hourglass_top
+              </mat-icon>
+
+            } @else if (
+              invoice.status === 'APPROVED'
+            ) {
+
+              <mat-icon>
+                check_circle
+              </mat-icon>
+
+            } @else if (
+              invoice.status === 'REJECTED'
+            ) {
+
+              <mat-icon>
+                cancel
+              </mat-icon>
+
+            } @else {
+
+              <mat-icon>
+                info
+              </mat-icon>
+
+            }
+
+          </div>
+
+
+          <strong>
+
+            @if (
+              invoice.status === 'UNDER_REVIEW'
+            ) {
+
+              Awaiting Approval
+
+            } @else {
+
+              {{ formatStatus(invoice.status) }}
+
+            }
+
+          </strong>
+
+
+          <span>
+
+            @if (
+              invoice.status === 'UNDER_REVIEW'
+            ) {
+
+              This invoice requires an approval decision.
+
+            } @else if (
+              invoice.status === 'APPROVED'
+            ) {
+
+              This invoice has already been approved.
+
+            } @else if (
+              invoice.status === 'REJECTED'
+            ) {
+
+              This invoice has been rejected.
+
+            } @else {
+
+              No approval action is currently required.
+
+            }
+
+          </span>
+
+        </section>
+
+
+        
+
+        <section class="quick-info-card">
+
+          <div class="quick-info-header">
+
+            <div>
+
+              <strong>
+                Invoice Information
+              </strong>
+
+              <span>
+                Quick reference
+              </span>
+
+            </div>
+
+            <mat-icon>
+              info
+            </mat-icon>
+
+          </div>
+
+
+          <div class="quick-row">
+
+            <span>
+              Created By
+            </span>
+
+            <strong>
+              {{ invoice.createdBy || '—' }}
+            </strong>
+
+          </div>
+
+
+          <div class="quick-row">
+
+            <span>
+              Invoice ID
+            </span>
+
+            <strong class="id-value">
+              {{ invoice._id }}
+            </strong>
+
+          </div>
+
+
+          <div class="quick-row">
+
+            <span>
+              Last Updated
+            </span>
+
+            <strong>
+
+              {{
+                invoice.updatedAt
+                  ? (
+                    invoice.updatedAt
+                    | date:'dd MMM yyyy'
+                  )
+                  : '—'
+              }}
+
+            </strong>
+
+          </div>
+
+        </section>
+
+      </aside>
+
+    </div>
+
+  }
+
+</div>
